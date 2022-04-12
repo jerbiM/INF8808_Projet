@@ -56,3 +56,10 @@ def group_by_column2_count(df, column, col2):
   return df.groupby([column, col2])[column].count()
 
 
+def group_by_year(df, chosenYear):
+  print('2222222222222222222222222222222222222222222222222222222222222222222222222')
+  print(sorted(df["year"].unique()) )
+  newDf = df[df.year == chosenYear]
+  print(newDf)
+  return newDf
+  
