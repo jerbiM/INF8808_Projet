@@ -1,0 +1,25 @@
+.viz-container{
+    height: 100%;
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    padding: 0 100px;
+}
+
+.sankey-link:hover{
+    fill: gold ;
+    fill-opacity: 1;
+}
+
+#panel {
+    background-color: white;
+    position: relative;
+    left: -215px;
+}
+
+h1 {
+    font-family: 'Times', 'serif';
+    font-size: 56px;
+    margin: 0;
+    font-weight: normal;
+}
