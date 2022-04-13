@@ -34,7 +34,7 @@ fig5 = sankey.sankey_diagram_r_cat(new_df, 'Sud')
 fig6 = sankey.sankey_diagram_g_scat(new_df, 'ArtsVisuels')
 
 
-
+fig4.write_html("index4.html")
 def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
 
     return html.Div(className='content', children=[
