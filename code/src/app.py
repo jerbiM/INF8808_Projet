@@ -7,6 +7,7 @@ import plotly.graph_objects as go
 import preprocess as preproc
 import sankey
 import stackedBarChart
+import heatmap
 
 app = dash.Dash(__name__)
 app.title = 'Projet | INF8808'
@@ -21,12 +22,17 @@ new_df = preproc.add_clusters(df, clusters)
 
 df_2016 = preproc.group_by_year(df, 2016)
 
+df_file_preprocessed = "assets/df.csv"
+df_preprocessed = preproc.to_df(df_file_preprocessed)
+
 fig1 = stackedBarChart.stackedBarChart(df_2016)
 fig2 = sankey.sankey_diagram_g_cat(new_df)
 fig3 = sankey.sankey_diagram_r_cat(new_df, 'Centre')
-fig4 = sankey.sankey_diagram_g_scat(new_df, 'Musique')
+#fig4 = sankey.sankey_diagram_g_scat(new_df, 'Musique')
+fig4 = heatmap.make_heatmap(df_preprocessed, years=set([2019,2020]))
 fig5 = sankey.sankey_diagram_r_cat(new_df, 'Sud')
 fig6 = sankey.sankey_diagram_g_scat(new_df, 'ArtsVisuels')
+
 
 
 def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
