@@ -173,7 +173,7 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
 app.layout = init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6)
 
 
-#fig1.write_html("indexFig1.html")
+fig1.write_html("indexViz1.html")
 #fig2.write_html("indexFig2.html")
 ##fig3.write_html("indexFig3.html")
 #fig4.write_html("indexFig4.html")
