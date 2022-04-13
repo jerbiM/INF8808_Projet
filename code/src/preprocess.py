@@ -56,10 +56,19 @@ def group_by_column2_count(df, column, col2):
   return df.groupby([column, col2])[column].count()
 
 
-def group_by_year(df, chosenYear):
-  print('2222222222222222222222222222222222222222222222222222222222222222222222222')
-  print(sorted(df["year"].unique()) )
+def group_by_year_month(df, chosenYear, chosenMonth):
+  #print('2222222222222222222222222222222222222222222222222222222222222222222222222')
+  #print(sorted(df["year"].unique()) )
   newDf = df[df.year == chosenYear]
-  print(newDf)
-  return newDf
+  #print(newDf)
+  #print('2222222222222222222222222222222222222222222222222222222222222222222222222')
+  #print(sorted(df["ye
+  newDFMonth = newDf[newDf.month == chosenMonth]
+  #print(newDFMonth)
+  return newDFMonth
+
+def group_by_month(df, chosenMonth):
+  newDFMonth = df[df.month == chosenMonth]
+  print(newDFMonth)
+  return newDFMonth
   
