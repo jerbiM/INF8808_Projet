@@ -64,6 +64,8 @@ def group_by_year_month(df, chosenYear, chosenMonth):
   #print('2222222222222222222222222222222222222222222222222222222222222222222222222')
   #print(sorted(df["ye
   newDFMonth = newDf[newDf.month == chosenMonth]
+  if newDFMonth.empty:
+    print('22222222222222222222222DataFrame is empty!')
   #print(newDFMonth)
   return newDFMonth
 

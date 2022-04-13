@@ -8,11 +8,12 @@ import preprocess as preproc
 import sankey
 import stackedBarChart
 import heatmap
+import pymsgbox
 
 app = dash.Dash(__name__)
 app.title = 'Projet | INF8808'
 
-df_file = "assets/donnees_culturelles_synapseC.csv"
+df_file = "assets/donnees_culturelles_synapseC_2.csv"
 df = preproc.to_df(df_file)
 # data preparation
 repartition_region = preproc.to_df("assets/repartion_region.csv")
@@ -20,7 +21,7 @@ clusters = preproc.add_cluster(repartition_region)
 
 new_df = preproc.add_clusters(df, clusters)
 
-df_2016 = preproc.group_by_year(df, 2016)
+df_2016 = preproc.group_by_year_month(df, 2016, 7)
 
 df_file_preprocessed = "assets/df.csv"
 df_preprocessed = preproc.to_df(df_file_preprocessed)
@@ -44,39 +45,59 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
         ]),
         html.Main(children=[
             html.Div([
-                html.Label(['Choose a year:'], style={'font-weight': 'bold'}),
-                dcc.RadioItems(
-                    id='radio',
-                    options=[
-                        {'label': '2016', 'value': '2016'},
-                        {'label': '2017', 'value': '2017'},
-                        {'label': '2018', 'value': '2018'},
-                        {'label': '2019', 'value': '2019'},
-                        {'label': '2020', 'value': '2020'},
-                        {'label': '2021', 'value': '2021'},
-                        {'label': '2022', 'value': '2022'},
-                        {'label': '2023', 'value': '2023'},
-                        {'label': '2024', 'value': '2024'},
-                        {'label': '2029', 'value': '2029'},
-                        {'label': '2041', 'value': '2041'},
-                    ],
-                    value='2016',
-                    style={"width": "60%"}
+                html.Div([
+
+                    html.Div([
+                        dcc.Dropdown(
+                            options=[
+                                {'label': '2016', 'value': '2016'},
+                                {'label': '2017', 'value': '2017'},
+                                {'label': '2018', 'value': '2018'},
+                                {'label': '2019', 'value': '2019'},
+                                {'label': '2020', 'value': '2020'},
+                                {'label': '2021', 'value': '2021'},
+                                {'label': '2022', 'value': '2022'},
+                                {'label': '2023', 'value': '2023'},
+                                {'label': '2024', 'value': '2024'},
+                                {'label': '2029', 'value': '2029'},
+                                {'label': '2041', 'value': '2041'},
+                            ],
+                            value='2016',
+                            id='dropdownYear'
+                        ),
+                    ], style={'width': '48%', 'display': 'inline-block'}),
+
+                    html.Div([
+                        dcc.Dropdown(
+                            options=[
+                                {'label': 'Montréal', 'value': 'Montréal'},
+                                {'label': 'Laval', 'value': 'Laval'},
+                                {'label': 'Estrie', 'value': 'Estrie'}
+                            ],
+                            value='Montréal',
+                            id='dropdownRegion'
+                        ),
+                    ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
+                ]),
+
+                dcc.Graph(figure=fig1,
+                          config=dict(
+                              scrollZoom=False,
+                              showTips=False,
+                              showAxisDragHandles=False,
+                              doubleClick=False,
+                              displayModeBar=False
+                          ),
+                          className='graph',
+                          id='viz_1'),
+                dcc.Slider(
+                    id='MonthsSlider',
+                    min=0,
+                    max=12,
+                    step=1,
+                    value='12'
                 ),
-            ]),
-            html.Div(className='viz-container', children=[
-                dcc.Graph(
-                    figure=fig1,
-                    config=dict(
-                        scrollZoom=False,
-                        showTips=False,
-                        showAxisDragHandles=False,
-                        doubleClick=False,
-                        displayModeBar=False
-                    ),
-                    className='graph',
-                    id='viz_1'
-                )
+                html.Label(['Month'], style={'font-weight': 'bold'})
             ]),
             html.Div(className='viz-container', children=[
                 dcc.Graph(
@@ -152,30 +173,24 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
 app.layout = init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6)
 
 
+#fig1.write_html("indexFig1.html")
+#fig2.write_html("indexFig2.html")
+##fig3.write_html("indexFig3.html")
+#fig4.write_html("indexFig4.html")
+#fig5.write_html("indexFig5.html")
+#fig6.write_html("indexFig6.html")
+
 @app.callback(
     Output('viz_1', 'figure'),
-    [Input(component_id='radio', component_property='value')]
+    [Input(component_id='dropdownYear', component_property='value')],
+    [Input(component_id='MonthsSlider', component_property='value')]
 )
-def figWithNewDf(value):
-    if value == '2016':
-        return stackedBarChart.stackedBarChart(preproc.group_by_year(df, 2016))
-    elif value == '2017':
-        return stackedBarChart.stackedBarChart(preproc.group_by_year(df, 2017))
-    elif value == '2018':
-        return stackedBarChart.stackedBarChart(preproc.group_by_year(df, 2018))
-    elif value == '2019':
-        return stackedBarChart.stackedBarChart(preproc.group_by_year(df, 2019))
-    elif value == '2020':
-        return stackedBarChart.stackedBarChart(preproc.group_by_year(df, 2020))
-    elif value == '2021':
-        return stackedBarChart.stackedBarChart(preproc.group_by_year(df, 2021))
-    elif value == '2022':
-        return stackedBarChart.stackedBarChart(preproc.group_by_year(df, 2022))
-    elif value == '2023':
-        return stackedBarChart.stackedBarChart(preproc.group_by_year(df, 2023))
-    elif value == '2024':
-        return stackedBarChart.stackedBarChart(preproc.group_by_year(df, 2024))
-    elif value == '2029':
-        return stackedBarChart.stackedBarChart(preproc.group_by_year(df, 2029))
-    else:
-        return stackedBarChart.stackedBarChart(preproc.group_by_year(df, 2041))
+def figWithNewDf(selected_year, selected_month):
+    print(selected_year)
+    print(selected_month)
+    print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
+    new_df_selected = preproc.group_by_year_month(df, int(selected_year), selected_month)
+    #if new_df_selected.empty:
+        #pymsgbox.alert('Pas d''événements pour la période choisie.', 'Avertissement')
+    return stackedBarChart.stackedBarChart(preproc.group_by_year_month(df, int(selected_year), selected_month))
+        
