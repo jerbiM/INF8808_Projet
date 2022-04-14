@@ -73,4 +73,33 @@ def group_by_month(df, chosenMonth):
   newDFMonth = df[df.month == chosenMonth]
   print(newDFMonth)
   return newDFMonth
+
+def data_prepartion_barchart_gratuit(df,cluster):
+
+  regions_list = list(cluster.index.get_level_values('groupe').unique())  # labels
+  groupe = {}
+  for row in regions_list:
+    temp_dt = df.loc[df['groupe'] == row]
+    groupe[row] = temp_dt
+
+
+  array = []
+  for item in groupe:
+    dict = {
+      'groupe': item,
+      'true_count': groupe[item]['est_gratuit'].value_counts()[1],
+      'false_count': groupe[item]['est_gratuit'].value_counts()[0],
+      'total_count':groupe[item]['est_gratuit'].value_counts()[1]+ groupe[item]['est_gratuit'].value_counts()[0]
+
+    }
+
+
+    array.append(dict)
+
+  df_order = pd.DataFrame.from_dict(array)
+
+  df_order.sort_values(['total_count'],inplace=True, ascending=False)
+
+
+  return df_order
   
