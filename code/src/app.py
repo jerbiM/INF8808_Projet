@@ -8,7 +8,7 @@ import preprocess as preproc
 import sankey
 import stackedBarChart
 import heatmap
-import pymsgbox
+#import pymsgbox
 import barchart
 
 app = dash.Dash(__name__)
@@ -22,7 +22,7 @@ clusters = preproc.add_cluster(repartition_region)
 
 new_df = preproc.add_clusters(df, clusters)
 
-df_2016 = preproc.group_by_year_month(df, 2016, 7)
+df_2016 = preproc.group_by_year_month(df, 2021, 7)
 
 df_file_preprocessed = "assets/df.csv"
 df_preprocessed = preproc.to_df(df_file_preprocessed)
@@ -41,7 +41,7 @@ fig6 = sankey.sankey_diagram_g_scat(new_df, 'ArtsVisuels')
 fig7=barchart.barchart_gratuit(df_barchart)
 
 
-fig4.write_html("index4.html")
+#fig4.write_html("index4.html")
 def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
 
     return html.Div(className='content', children=[
@@ -192,6 +192,63 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
 app.layout = init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6)
 
 
+
+with open('indexViz_alpha.html', 'a') as f:
+    f.write(fig1.to_html(full_html=False, include_plotlyjs='cdn'))
+    f.write(fig2.to_html(full_html=False, include_plotlyjs='cdn'))
+    f.write(fig3.to_html(full_html=False, include_plotlyjs='cdn'))
+    f.write(fig4.to_html(full_html=False, include_plotlyjs='cdn'))
+    f.write(fig5.to_html(full_html=False, include_plotlyjs='cdn'))
+    f.write(fig6.to_html(full_html=False, include_plotlyjs='cdn'))
+    f.write(fig7.to_html(full_html=False, include_plotlyjs='cdn'))
+
+# fig1.update_layout(
+#     updatemenus=[
+#         dict(
+#             buttons=list([
+#                 dict(
+#                     args=["2021", "5"],
+#                     label="2016",
+#                     method="restyle"
+#                 ),
+#                 dict(
+#                     args=["year", "2017"],
+#                     label="2017",
+#                     method="restyle"
+#                 )
+#             ]),
+#             direction="down",
+#             pad={"r": 10, "t": 10},
+#             showactive=True,
+#             x=0.1,
+#             xanchor="left",
+#             y=1.1,
+#             yanchor="top"
+#         ),
+#         dict(
+#             buttons=list([
+#                 dict(
+#                     args=["month", "1"],
+#                     label="Janvier",
+#                     method="restyle"
+#                 ),
+#                 dict(
+#                     args=["month", "2"],
+#                     label="Fevrier",
+#                     method="restyle"
+#                 )
+#             ]),
+#             direction="down",
+#             pad={"r": 10, "t": 10},
+#             showactive=True,
+#             x=0.1,
+#             xanchor="right",
+#             y=1.1,
+#             yanchor="top"
+#         )
+#     ]
+# )
+    
 #fig1.write_html("indexViz1.html")
 #fig2.write_html("indexFig2.html")
 ##fig3.write_html("indexFig3.html")
