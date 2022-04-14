@@ -28,5 +28,15 @@ def make_heatmap(df, years):
         y="count",
         name="Number of events",
         years_title=True,
+        space_between_plots = 0.18,
     )
+    fig.update_traces(colorbar=dict(
+    title="Nombre d'évènements",
+    thicknessmode="pixels", thickness=10,
+    lenmode="pixels", len=300,
+    yanchor="middle",
+    ticks="outside", 
+    ticksuffix="",
+    dtick=2
+    ), showscale = True, selector=dict(type='heatmap'))
     return fig
