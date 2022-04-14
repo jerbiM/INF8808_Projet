@@ -9,6 +9,7 @@ import sankey
 import stackedBarChart
 import heatmap
 import pymsgbox
+import barchart
 
 app = dash.Dash(__name__)
 app.title = 'Projet | INF8808'
@@ -26,6 +27,10 @@ df_2016 = preproc.group_by_year_month(df, 2016, 7)
 df_file_preprocessed = "assets/df.csv"
 df_preprocessed = preproc.to_df(df_file_preprocessed)
 
+clus_est_gratuit_data=preproc.group_by_column2_count(df, 'groupe','est_gratuit')
+df_barchart=preproc.data_prepartion_barchart_gratuit(new_df,clus_est_gratuit_data)
+
+
 fig1 = stackedBarChart.stackedBarChart(df_2016)
 fig2 = sankey.sankey_diagram_g_cat(new_df)
 fig3 = sankey.sankey_diagram_r_cat(new_df, 'Centre')
@@ -33,6 +38,7 @@ fig3 = sankey.sankey_diagram_r_cat(new_df, 'Centre')
 fig4 = heatmap.make_heatmap(df_preprocessed, years=set([2019,2020]))
 fig5 = sankey.sankey_diagram_r_cat(new_df, 'Sud')
 fig6 = sankey.sankey_diagram_g_scat(new_df, 'ArtsVisuels')
+fig7=barchart.barchart_gratuit(df_barchart)
 
 
 fig4.write_html("index4.html")
@@ -165,6 +171,19 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
                     className='graph',
                     id='viz_6'
                 )
+            ]),
+            html.Div(className='viz-container', children=[
+                dcc.Graph(
+                    figure=fig7,
+                    config=dict(
+                        scrollZoom=False,
+                        showTips=False,
+                        showAxisDragHandles=False,
+                        displayModeBar=False
+                    ),
+                    className='graph',
+                    id='viz_7'
+                )
             ])
         ])
     ])
@@ -173,7 +192,7 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
 app.layout = init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6)
 
 
-fig1.write_html("indexViz1.html")
+#fig1.write_html("indexViz1.html")
 #fig2.write_html("indexFig2.html")
 ##fig3.write_html("indexFig3.html")
 #fig4.write_html("indexFig4.html")
