@@ -87,8 +87,8 @@ def data_prepartion_barchart_gratuit(df,cluster):
   for item in groupe:
     dict = {
       'groupe': item,
-      'true_count': groupe[item]['est_gratuit'].value_counts()[1],
-      'false_count': groupe[item]['est_gratuit'].value_counts()[0],
+      'événements_gratuits': groupe[item]['est_gratuit'].value_counts()[1],
+      'événement_payant': groupe[item]['est_gratuit'].value_counts()[0],
       'total_count':groupe[item]['est_gratuit'].value_counts()[1]+ groupe[item]['est_gratuit'].value_counts()[0]
 
     }
