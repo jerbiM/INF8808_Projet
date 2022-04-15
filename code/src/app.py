@@ -14,17 +14,17 @@ import barchart
 app = dash.Dash(__name__)
 app.title = 'Projet | INF8808'
 
-df_file = "assets/donnees_culturelles_synapseC_2.csv"
+df_file = "donnees_culturelles_synapseC_2.csv"
 df = preproc.to_df(df_file)
 # data preparation
-repartition_region = preproc.to_df("assets/repartion_region.csv")
+repartition_region = preproc.to_df("repartion_region.csv")
 clusters = preproc.add_cluster(repartition_region)
 
 new_df = preproc.add_clusters(df, clusters)
 
 df_2016 = preproc.group_by_year_month(df, 2021, 7)
 
-df_file_preprocessed = "assets/df.csv"
+df_file_preprocessed = "df.csv"
 df_preprocessed = preproc.to_df(df_file_preprocessed)
 
 clus_est_gratuit_data=preproc.group_by_column2_count(df, 'groupe','est_gratuit')
@@ -105,34 +105,34 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
                 ),
                 html.Label(['Month'], style={'font-weight': 'bold'})
             ]),
-            html.Div(className='viz-container', children=[
-                dcc.Graph(
-                    figure=fig2,
-                    config=dict(
-                        scrollZoom=False,
-                        showTips=False,
-                        showAxisDragHandles=False,
-                        doubleClick=False,
-                        displayModeBar=False
-                    ),
-                    className='sankey-link',
-                    id='viz_2'
-                )
-            ]),
-            html.Div(className='viz-container', children=[
-                dcc.Graph(
-                    figure=fig3,
-                    config=dict(
-                        scrollZoom=False,
-                        showTips=False,
-                        showAxisDragHandles=False,
-                        doubleClick=False,
-                        displayModeBar=False
-                    ),
-                    className='graph',
-                    id='viz_3'
-                )
-            ]),
+            # html.Div(className='viz-container', children=[
+            #     dcc.Graph(
+            #         figure=fig2,
+            #         config=dict(
+            #             scrollZoom=False,
+            #             showTips=False,
+            #             showAxisDragHandles=False,
+            #             doubleClick=False,
+            #             displayModeBar=False
+            #         ),
+            #         className='sankey-link',
+            #         id='viz_2'
+            #     )
+            # ]),
+            # html.Div(className='viz-container', children=[
+            #     dcc.Graph(
+            #         figure=fig3,
+            #         config=dict(
+            #             scrollZoom=False,
+            #             showTips=False,
+            #             showAxisDragHandles=False,
+            #             doubleClick=False,
+            #             displayModeBar=False
+            #         ),
+            #         className='graph',
+            #         id='viz_3'
+            #     )
+            # ]),
             html.Div(className='viz-container', children=[
                 dcc.Graph(
                     figure=fig4,
@@ -148,7 +148,7 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
             ]),
             html.Div(className='viz-container', children=[
                 dcc.Graph(
-                    figure=fig5,
+                    figure=fig2,
                     config=dict(
                         scrollZoom=False,
                         showTips=False,
@@ -159,19 +159,19 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
                     id='viz_5'
                 )
             ]),
-            html.Div(className='viz-container', children=[
-                dcc.Graph(
-                    figure=fig6,
-                    config=dict(
-                        scrollZoom=False,
-                        showTips=False,
-                        showAxisDragHandles=False,
-                        displayModeBar=False
-                    ),
-                    className='graph',
-                    id='viz_6'
-                )
-            ]),
+            # html.Div(className='viz-container', children=[
+            #     dcc.Graph(
+            #         figure=fig3,
+            #         config=dict(
+            #             scrollZoom=False,
+            #             showTips=False,
+            #             showAxisDragHandles=False,
+            #             displayModeBar=False
+            #         ),
+            #         className='graph',
+            #         id='viz_6'
+            #     )
+            # ]),
             html.Div(className='viz-container', children=[
                 dcc.Graph(
                     figure=fig7,
