@@ -146,6 +146,42 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
                     id='viz_4'
                 )
             ]),
+            html.Div(className='img-quebec', children=[
+                    html.Img(src="assets/Quebec_clusters.PNG", 
+                    id="quebec-cluster"),
+                    html.Div(className="overlay",children=[
+                        html.Div('Les centres culturels sont les suivants:',className="title"),
+                        html.Div(children=['Nord du Québec :',
+                            html.Div(className="text-nord", children=[
+                                'Abitibi-Temiscamingue',
+                                html.Div('Capitale-Nationale'),
+                                html.Div('Côte-Nord'),
+                                html.Div('Mauricie'),
+                                html.Div('Nord-du-Québec et de la Baie-James'),
+                                html.Div('Saguenay-Lac-Saint-Jean')
+                            ], style={'color':'black'}),
+                        ],className="title-nord"),
+                        html.Div(children=['Centre du Québec :',
+                            html.Div(className="text-centre", children=[
+                                'Centre-du-Québec',
+                                html.Div('Lanaudière'),
+                                html.Div('Laurentides'),
+                                html.Div('Laval'),
+                                html.Div('Outaouais')
+                            ], style={'color':'black'}),
+                        ],className="title-centre"),
+                        html.Div(children=['Sud du Québec :',
+                            html.Div(className="text-sud", children=[
+                                'Bas-Saint-Laurent',
+                                html.Div('Chaudière-Appalaches'),
+                                html.Div('Estrie'),
+                                html.Div('Gaspésie et îles-de-la-Madeleine'),
+                                html.Div('Montérégie')
+                            ], style={'color':'black'}),
+                        ],className="title-sud"),
+                        html.Div(children=['Montréal'],className="title-montreal")
+                    ])
+                ]),
             html.Div(className='viz-container', children=[
                 dcc.Graph(
                     figure=fig2,
