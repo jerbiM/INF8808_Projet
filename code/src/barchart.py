@@ -6,7 +6,7 @@ def barchart_gratuit(df):
 	fig = px.bar(df, x='groupe', y=["événements_gratuits", "événement_payant"] )
 
 	fig.update_layout(
-		title="Barchart pour les événements gratuits et payants.",
+		#title="Barchart pour les événements gratuits et payants.",
 		xaxis_title="Régions au Québec",
 		yaxis_title="Nombre d'évènements",
 

@@ -1,6 +1,5 @@
-from dash import dcc
 import plotly.graph_objects as go
-import hover_template as hover
+from src import hover_template as hover
 
 
 def group_by_column2_count(df, column, col2):
@@ -81,7 +80,11 @@ def sankey_diagram_g_cat(df):
 			hovertemplate= hover.sankey_hover_template_link()
 			#color = '#7d8cb4',
 		))])
-	fig.update_layout(title_text="Diagramme de Sankey des centres et catégories culturelles", font_size=10, font={'color': '#e72489'}, title_font_color= 'black')
+	fig.update_layout(#title_text="Diagramme de Sankey des centres et catégories culturelles",
+	                  font_size=10,
+					font={'color': '#e72489'},
+		#title_font_color= 'black'
+	)
 	return fig
 
 def sankey_diagram_r_cat(df, cond):

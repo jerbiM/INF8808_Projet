@@ -1,8 +1,7 @@
 import dash
 from dash import html
 from dash import dcc
-from dash.dependencies import Input, Output, State
-import plotly.graph_objects as go
+from dash.dependencies import Input, Output
 
 import preprocess as preproc
 import sankey
@@ -14,17 +13,17 @@ import barchart
 app = dash.Dash(__name__)
 app.title = 'Projet | INF8808'
 
-df_file = "donnees_culturelles_synapseC_2.csv"
+df_file = "assets/donnees_culturelles_synapseC_2.csv"
 df = preproc.to_df(df_file)
 # data preparation
-repartition_region = preproc.to_df("repartion_region.csv")
+repartition_region = preproc.to_df("assets/repartion_region.csv")
 clusters = preproc.add_cluster(repartition_region)
 
 new_df = preproc.add_clusters(df, clusters)
 
 df_2016 = preproc.group_by_year_month(df, 2021, 7)
 
-df_file_preprocessed = "df.csv"
+df_file_preprocessed = "assets/df.csv"
 df_preprocessed = preproc.to_df(df_file_preprocessed)
 
 clus_est_gratuit_data=preproc.group_by_column2_count(df, 'groupe','est_gratuit')
@@ -35,10 +34,10 @@ fig1 = stackedBarChart.stackedBarChart(df_2016)
 fig2 = sankey.sankey_diagram_g_cat(new_df)
 fig3 = sankey.sankey_diagram_r_cat(new_df, 'Centre')
 #fig4 = sankey.sankey_diagram_g_scat(new_df, 'Musique')
-fig4 = heatmap.make_heatmap(df_preprocessed, years=set([2019,2020]))
+fig4 = heatmap.make_heatmap(df_preprocessed, years=set([2019, 2020]))
 fig5 = sankey.sankey_diagram_r_cat(new_df, 'Sud')
 fig6 = sankey.sankey_diagram_g_scat(new_df, 'ArtsVisuels')
-fig7=barchart.barchart_gratuit(df_barchart)
+fig7= barchart.barchart_gratuit(df_barchart)
 
 
 #fig4.write_html("index4.html")
@@ -134,6 +133,7 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
             #     )
             # ]),
             html.Div(className='viz-container', children=[
+                html.H2('Répartition temporelle des événements'),
                 dcc.Graph(
                     figure=fig4,
                     config=dict(
@@ -147,8 +147,8 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
                 )
             ]),
             html.Div(className='img-quebec', children=[
-                    html.Img(src="assets/Quebec_clusters.PNG", 
-                    id="quebec-cluster"),
+                    html.Img(src="assets/Quebec_clusters.PNG",
+                             id="quebec-cluster"),
                     html.Div(className="overlay",children=[
                         html.Div('Les centres culturels sont les suivants:',className="title"),
                         html.Div(children=['Nord du Québec :',
@@ -183,6 +183,7 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
                     ])
                 ]),
             html.Div(className='viz-container', children=[
+                html.H2('Diagramme de Sankey des centres et catégories culturelles'),
                 dcc.Graph(
                     figure=fig2,
                     config=dict(
@@ -209,6 +210,7 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
             #     )
             # ]),
             html.Div(className='viz-container', children=[
+                html.H2('Barchart pour les événements gratuits et payants.'),
                 dcc.Graph(
                     figure=fig7,
                     config=dict(
