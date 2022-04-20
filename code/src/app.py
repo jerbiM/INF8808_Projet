@@ -306,8 +306,8 @@ def figWithNewDf(selected_year, selected_month, selected_region, selected_price)
     print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
     if selected_region == 'Toutes les régions':
         print('ICI')
-        return stackedBarChart.stackedBarChart(preproc.group_by_year_month(
-            df, int(selected_year), int(selected_month)))
+        return stackedBarChart.stackedBarChart(preproc.group_by_year_month_price(
+            df, int(selected_year), int(selected_month), selected_price))
     else:
         #return stackedBarChart.stackedBarChart(preproc.group_by_year_month_region(
             #df, int(selected_year), int(selected_month), selected_region))

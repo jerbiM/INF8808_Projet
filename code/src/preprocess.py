@@ -75,6 +75,24 @@ def group_by_year_month(df, chosenYear, chosenMonth):
     return newDFMonth
 
 
+def group_by_year_month_price(df, chosenYear, chosenMonth, chosenPrice):
+    #print(sorted(df["year"].unique()) )
+    newDf = df[df.year == chosenYear]
+    newDFMonth = newDf[newDf.month == chosenMonth]
+    
+    newDFMonth["prix"] = pd.to_numeric(newDFMonth["prix"], downcast="float")
+    minPrice = pd.to_numeric(chosenPrice[0], downcast="float")
+    maxPrice = pd.to_numeric(chosenPrice[1], downcast="float")
+    
+    newDFPriceMin = newDFMonth[minPrice <= newDFMonth['prix']]
+    newDFPrice = newDFPriceMin[newDFPriceMin['prix'] <= maxPrice]
+    print(newDFPrice)
+    if newDFPrice.empty:
+        print('22222222222222222222222DataFrame is empty!')
+    return newDFPrice  
+  
+
+
 def group_by_year_month_region(df, chosenYear, chosenMonth, chosenRegion):
     newDf = df[df.year == chosenYear]
     newDFMonth = newDf[newDf.month == chosenMonth]
