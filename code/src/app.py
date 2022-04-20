@@ -131,10 +131,10 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
                     step=1,
                     value='12'
                 ),
-                html.Label(['Choisir le prix en CAD'],
+                html.Label(['Choisir le range du prix en CAD'],
                            style={'font-weight': 'bold'}),
                 html.Div([
-                    dcc.Input(type='text', id='minPrice'),
+                    #dcc.Input(type='text', id='minPrice'),
                     dcc.RangeSlider(
                         id='PriceSlider',
                         min=0,
@@ -143,9 +143,9 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
                         step=50,
                         allowCross=False
                     ),
-                    dcc.Input(type='text', id='maxPrice'),
-                ],
-                    style={"display": "grid", "grid-template-columns": "10% 40% 10%"})
+                    #dcc.Input(type='text', id='maxPrice'),
+                ]),
+                    #style={"display": "grid", "grid-template-columns": "10% 40% 10%"})
 
             ]),
             # html.Div(className='viz-container', children=[
