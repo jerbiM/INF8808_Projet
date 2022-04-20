@@ -140,7 +140,7 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
                         min=0,
                         max=1000,
                         value=[0, 1000],
-                        step=250,
+                        step=50,
                         allowCross=False
                     ),
                     dcc.Input(type='text', id='maxPrice'),
@@ -309,7 +309,10 @@ def figWithNewDf(selected_year, selected_month, selected_region, selected_price)
         return stackedBarChart.stackedBarChart(preproc.group_by_year_month(
             df, int(selected_year), int(selected_month)))
     else:
-        return stackedBarChart.stackedBarChart(preproc.group_by_year_month_region(
-            df, int(selected_year), int(selected_month), selected_region))
+        #return stackedBarChart.stackedBarChart(preproc.group_by_year_month_region(
+            #df, int(selected_year), int(selected_month), selected_region))
+        
+        return stackedBarChart.stackedBarChart(preproc.group_by_year_month_region_price(
+            df, int(selected_year), int(selected_month), selected_region, selected_price))
     # if new_df_selected.empty:
         # pymsgbox.alert('Pas d''événements pour la période choisie.', 'Avertissement')
