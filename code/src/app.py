@@ -14,7 +14,7 @@ import barchart
 app = dash.Dash(__name__)
 app.title = 'Projet | INF8808'
 
-df_file = "assets/donnees_culturelles_synapseC_2.csv"
+df_file = "assets/df_ghaliUpdated.csv"
 df = preproc.to_df(df_file)
 # data preparation
 repartition_region = preproc.to_df("assets/repartion_region.csv")
@@ -58,6 +58,8 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
                     html.Div([
                         dcc.Dropdown(
                             options=[
+                                {'label': '2012', 'value': '2012'},
+                                {'label': '2015', 'value': '2015'},
                                 {'label': '2016', 'value': '2016'},
                                 {'label': '2017', 'value': '2017'},
                                 {'label': '2018', 'value': '2018'},
@@ -67,8 +69,7 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
                                 {'label': '2022', 'value': '2022'},
                                 {'label': '2023', 'value': '2023'},
                                 {'label': '2024', 'value': '2024'},
-                                {'label': '2029', 'value': '2029'},
-                                {'label': '2041', 'value': '2041'},
+                                {'label': '2030', 'value': '2030'}
                             ],
                             value='2016',
                             id='dropdownYear'
@@ -89,14 +90,14 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
                                 {'label': 'Chaudière-Appalaches',
                                     'value': 'Chaudière-Appalaches'},
                                 {'label': 'Côte-Nord', 'value': 'Côte-Nord'},
-                                {'label': 'Gaspésie et îles-de-la-Madeleine',
-                                    'value': 'Gaspésie et îles-de-la-Madeleine'},
+                                {'label': 'Gaspésie–Îles-de-la-Madeleine',
+                                    'value': 'Gaspésie–Îles-de-la-Madeleine'},
                                 {'label': 'Lanaudière', 'value': 'Lanaudière'},
                                 {'label': 'Laurentides', 'value': 'Laurentides'},
-                                {'label': 'Laval', 'value': 'Laval'},
+                                {'label': 'Laval', 'value': 'Laval (13)'},
                                 {'label': 'Mauricie', 'value': 'Mauricie'},
                                 {'label': 'Montérégie', 'value': 'Montérégie'},
-                                {'label': 'Montréal', 'value': 'Montréal'},
+                                {'label': 'Montréal', 'value': 'Montréal (06)'},
                                 {'label': 'Nord-du-Québec',
                                     'value': 'Nord-du-Québec'},
                                 {'label': 'Outaouais', 'value': 'Outaouais'},
@@ -292,22 +293,23 @@ with open('indexViz_alpha.html', 'a') as f:
     [Input(component_id='MonthsSlider', component_property='value')],
     [Input(component_id='dropdownRegion', component_property='value')],
     #[Input(component_id='minPrice', component_property='value')],
-    #[Input(component_id='PriceSlider', component_property='value')],
+    [Input(component_id='PriceSlider', component_property='value')],
     #[Input(component_id='maxPrice', component_property='value')],
 
 
 )
-def figWithNewDf(selected_year, selected_month, selected_region):#, selected_price):
+def figWithNewDf(selected_year, selected_month, selected_region, selected_price):
     print(selected_year)
     print(selected_month)
     print(selected_region)
+    print(selected_price)
     print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
     if selected_region == 'Toutes les régions':
+        print('ICI')
         return stackedBarChart.stackedBarChart(preproc.group_by_year_month(
-            df, int(selected_year), selected_month))
+            df, int(selected_year), int(selected_month)))
     else:
         return stackedBarChart.stackedBarChart(preproc.group_by_year_month_region(
-            df, int(selected_year), selected_month, selected_region))
-        #print('HERE!!!!!', selected_price)
+            df, int(selected_year), int(selected_month), selected_region))
     # if new_df_selected.empty:
         # pymsgbox.alert('Pas d''événements pour la période choisie.', 'Avertissement')

@@ -4,11 +4,11 @@ import plotly.express as px
 
 def stackedBarChart(df):
     sizeY = 1
-    df['date_debut'] = pd.to_datetime(df["date_debut"])
-    print(df['date_debut'])
+    df['date'] = pd.to_datetime(df["date"])
+    #print(df['date'])
     df.insert(0, 'Événements', sizeY)
 
-    fig = px.bar(df, x="date_debut", y="Événements", color='categorie').update_layout(
+    fig = px.bar(df, x="date", y="Événements", color='categorie').update_layout(
         xaxis={"rangeslider": {"visible": True},
                "autorange": True
         },

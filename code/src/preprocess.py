@@ -57,17 +57,26 @@ def group_by_column2_count(df, column, col2):
 
 
 def group_by_year_month(df, chosenYear, chosenMonth):
-  #print('2222222222222222222222222222222222222222222222222222222222222222222222222')
   #print(sorted(df["year"].unique()) )
   newDf = df[df.year == chosenYear]
-  #print(newDf)
-  #print('2222222222222222222222222222222222222222222222222222222222222222222222222')
-  #print(sorted(df["ye
   newDFMonth = newDf[newDf.month == chosenMonth]
+  print(newDFMonth)
   if newDFMonth.empty:
     print('22222222222222222222222DataFrame is empty!')
-  #print(newDFMonth)
   return newDFMonth
+
+def group_by_year_month_region(df, chosenYear, chosenMonth, chosenRegion):
+  #print("ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",chosenRegion)
+  newDf = df[df.year == chosenYear]
+  newDFMonth = newDf[newDf.month == chosenMonth]
+  #print(newDFMonth['updated_region'])
+  #print(newDFMonth)
+  newDFRegion = newDFMonth[newDFMonth.region == chosenRegion]
+  #print(newDFRegion)
+  if newDFRegion.empty:
+    print('22222222222222222222222DataFrame Region is empty!')
+  #print(newDFMonth)
+  return newDFRegion
 
 def group_by_month(df, chosenMonth):
   newDFMonth = df[df.month == chosenMonth]
