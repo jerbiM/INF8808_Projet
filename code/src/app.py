@@ -16,11 +16,14 @@ app.title = 'Projet | INF8808'
 
 df_file = "assets/df_ghaliUpdated.csv"
 df = preproc.to_df(df_file)
+
+df_N = preproc.to_df("assets/df_Nina.csv")
 # data preparation
 repartition_region = preproc.to_df("assets/repartion_region.csv")
-clusters = preproc.add_cluster(repartition_region)
+montreal_quartier = preproc.to_df("assets/df_montreal.csv")
+clusters = preproc.add_cluster(repartition_region, montreal_quartier)
 
-new_df = preproc.add_clusters(df, clusters)
+df_sankey = preproc.add_clusters(df_N, clusters)
 
 df_2016 = preproc.group_by_year_month(df, 2016, 12)
 
@@ -28,18 +31,18 @@ df_file_preprocessed = "assets/df.csv"
 df_preprocessed = preproc.to_df(df_file_preprocessed)
 
 clus_est_gratuit_data = preproc.group_by_column2_count(
-    df, 'groupe', 'est_gratuit')
+    df_sankey, 'groupe', 'est_gratuit')
 df_barchart = preproc.data_prepartion_barchart_gratuit(
-    new_df, clus_est_gratuit_data)
+    df_sankey, clus_est_gratuit_data)
 
 
 fig1 = stackedBarChart.stackedBarChart(df_2016)
-fig2 = sankey.sankey_diagram_g_cat(new_df)
-fig3 = sankey.sankey_diagram_r_cat(new_df, 'Centre')
+fig2 = sankey.sankey_diagram_g_cat(df_sankey)
+fig3 = sankey.sankey_diagram_r_cat(df_sankey, 'Centre')
 # fig4 = sankey.sankey_diagram_g_scat(new_df, 'Musique')
 fig4 = heatmap.make_heatmap(df_preprocessed, years=set([2019, 2020]))
-fig5 = sankey.sankey_diagram_r_cat(new_df, 'Sud')
-fig6 = sankey.sankey_diagram_g_scat(new_df, 'ArtsVisuels')
+fig5 = sankey.sankey_diagram_r_cat(df_sankey, 'Sud')
+fig6 = sankey.sankey_diagram_g_scat(df_sankey, 'ArtsVisuels')
 fig7 = barchart.barchart_gratuit(df_barchart)
 
 
@@ -131,21 +134,21 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
                     step=1,
                     value='12'
                 ),
-                html.Label(['Choisir le range du prix en CAD'],
+                html.Label(['Choisir le prix en CAD'],
                            style={'font-weight': 'bold'}),
                 html.Div([
-                    #dcc.Input(type='text', id='minPrice'),
+                    dcc.Input(type='text', id='minPrice'),
                     dcc.RangeSlider(
                         id='PriceSlider',
                         min=0,
                         max=1000,
                         value=[0, 1000],
-                        step=50,
+                        step=250,
                         allowCross=False
                     ),
-                    #dcc.Input(type='text', id='maxPrice'),
-                ]),
-                    #style={"display": "grid", "grid-template-columns": "10% 40% 10%"})
+                    dcc.Input(type='text', id='maxPrice'),
+                ],
+                    style={"display": "grid", "grid-template-columns": "10% 40% 10%"})
 
             ]),
             # html.Div(className='viz-container', children=[
@@ -244,19 +247,7 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
                     id='sankey'
                 )
             ]),
-            # html.Div(className='viz-container', children=[
-            #     dcc.Graph(
-            #         figure=fig3,
-            #         config=dict(
-            #             scrollZoom=False,
-            #             showTips=False,
-            #             showAxisDragHandles=False,
-            #             displayModeBar=False
-            #         ),
-            #         className='graph',
-            #         id='viz_6'
-            #     )
-            # ]),
+
             html.Div(className='viz-container', children=[
                 dcc.Graph(
                     figure=fig7,
@@ -295,8 +286,6 @@ with open('indexViz_alpha.html', 'a') as f:
     #[Input(component_id='minPrice', component_property='value')],
     [Input(component_id='PriceSlider', component_property='value')],
     #[Input(component_id='maxPrice', component_property='value')],
-
-
 )
 def figWithNewDf(selected_year, selected_month, selected_region, selected_price):
     print(selected_year)
@@ -306,17 +295,14 @@ def figWithNewDf(selected_year, selected_month, selected_region, selected_price)
     print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
     if selected_region == 'Toutes les régions':
         print('ICI')
-        return stackedBarChart.stackedBarChart(preproc.group_by_year_month_price(
-            df, int(selected_year), int(selected_month), selected_price))
+        return stackedBarChart.stackedBarChart(preproc.group_by_year_month(
+            df, int(selected_year), int(selected_month)))
     else:
-        #return stackedBarChart.stackedBarChart(preproc.group_by_year_month_region(
-            #df, int(selected_year), int(selected_month), selected_region))
-        
-        return stackedBarChart.stackedBarChart(preproc.group_by_year_month_region_price(
-            df, int(selected_year), int(selected_month), selected_region, selected_price))
+        return stackedBarChart.stackedBarChart(preproc.group_by_year_month_region(
+            df, int(selected_year), int(selected_month), selected_region))
     # if new_df_selected.empty:
         # pymsgbox.alert('Pas d''événements pour la période choisie.', 'Avertissement')
-
+        
 @app.callback(
     [Output('sankey', 'figure')],
     [Input('sankey', 'clickData')],
@@ -352,22 +338,22 @@ def display(clicks_fig, figure): # noqa : E501 pylint: disable=unused-argument t
             #group with ?
             if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
                 #group with categ
-                fig = sankey.sankey_diagram_g_cat(new_df).to_dict()
+                fig = sankey.sankey_diagram_g_cat(df_sankey).to_dict()
             else:
                 #group with sous cat
                 cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split()[-1]
-                fig = sankey.sankey_diagram_g_scat(new_df, cond2).to_dict()
+                fig = sankey.sankey_diagram_g_scat(df_sankey, cond2).to_dict()
         
         else :
             #region with ?
             cond = ctx.states['sankey.figure']['layout']['title']['text'].split()[6]
             if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
                 #group with categ
-                fig = sankey.sankey_diagram_r_cat(new_df, cond).to_dict()
+                fig = sankey.sankey_diagram_r_cat(df_sankey, cond).to_dict()
             else:
                 #group with sous cat
                 cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split()[-1]
-                fig = sankey.sankey_diagram_reg_scat(new_df, cond, cond2).to_dict()
+                fig = sankey.sankey_diagram_reg_scat(df_sankey, cond, cond2).to_dict()
 
         
         click_index = ctx.triggered[0]['value']['points'][0]['index']
@@ -377,10 +363,10 @@ def display(clicks_fig, figure): # noqa : E501 pylint: disable=unused-argument t
     
     click_node = ctx.triggered[0]['value']['points'][0]['label']
 
-    node_group = list(new_df['groupe'].unique())
-    node_cat = list(new_df['categorie'].unique())
-    node_region = list(new_df['region'].unique())
-    node_sous_cat = list(new_df['sousCategorie'].unique())
+    node_group = list(df_sankey['groupe'].unique())
+    node_cat = list(df_sankey['categorie'].unique())
+    node_region = list(df_sankey['region'].unique())
+    node_sous_cat = list(df_sankey['sousCategorie'].unique())
     
    
     #check in which case we are
@@ -389,16 +375,16 @@ def display(clicks_fig, figure): # noqa : E501 pylint: disable=unused-argument t
 
     if click_node in node_group:
         if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
-            return [sankey.sankey_diagram_r_cat(new_df, click_node)]
+            return [sankey.sankey_diagram_r_cat(df_sankey, click_node)]
         cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split()[-1]
-        return [sankey.sankey_diagram_reg_scat(new_df, click_node, cond2)]
+        return [sankey.sankey_diagram_reg_scat(df_sankey, click_node, cond2)]
     
     elif click_node in node_cat:
         if "Nord" in ctx.states['sankey.figure']['data'][0]['node']['label']:
-            return [sankey.sankey_diagram_g_scat(new_df, click_node)]
+            return [sankey.sankey_diagram_g_scat(df_sankey, click_node)]
         cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split()[6]
 
-        return [sankey.sankey_diagram_reg_scat(new_df, cond2, click_node)]
+        return [sankey.sankey_diagram_reg_scat(df_sankey, cond2, click_node)]
     
     elif click_node in node_region or click_node in node_sous_cat:
 
@@ -407,22 +393,22 @@ def display(clicks_fig, figure): # noqa : E501 pylint: disable=unused-argument t
             #group with ?
             if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
                 #group with categ
-                fig = sankey.sankey_diagram_g_cat(new_df).to_dict()
+                fig = sankey.sankey_diagram_g_cat(df_sankey).to_dict()
             else:
                 #group with sous cat
                 cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split()[-1]
-                fig = sankey.sankey_diagram_g_scat(new_df, cond2).to_dict()
+                fig = sankey.sankey_diagram_g_scat(df_sankey, cond2).to_dict()
         
         else :
             #region with ?
             cond = ctx.states['sankey.figure']['layout']['title']['text'].split()[6]
             if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
                 #group with categ
-                fig = sankey.sankey_diagram_r_cat(new_df, cond).to_dict()
+                fig = sankey.sankey_diagram_r_cat(df_sankey, cond).to_dict()
             else:
                 #group with sous cat
                 cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split()[-1]
-                fig = sankey.sankey_diagram_reg_scat(new_df, cond, cond2).to_dict()
+                fig = sankey.sankey_diagram_reg_scat(df_sankey, cond, cond2).to_dict()
 
         click_index = ctx.triggered[0]['value']['points'][0]['index']
         return [sankey.change_color_node(figure, click_index)]
