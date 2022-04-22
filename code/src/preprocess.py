@@ -126,3 +126,50 @@ def data_prepartion_barchart_gratuit(df,cluster):
 
 
   return df_order
+
+
+def data_prepartion_barchart_par_prix(df,region):
+
+  data = df.loc[(df["groupe"] == region)& (df["est_gratuit"] ==False)]
+
+
+  categorie = data['categorie'].unique().tolist()
+
+  groupe = {}
+
+  for cat in categorie:
+
+    temp_dt = pd.DataFrame()
+
+    temp_dt['prix'] = data.loc[(data["categorie"] == cat) & (data["groupe"] == region),'prix']
+
+    quant = [0, .25, 0.5, .75, 1]
+    quartiles = data['prix'].quantile(quant)
+
+
+
+    temp_dt['seuil1'] = temp_dt['prix'].apply(lambda x: True if (x >= quartiles[0]) & (x < quartiles[0.5]) else False)
+    temp_dt['seuil2'] = temp_dt['prix'].apply(lambda x: True if (x >= quartiles[0.5]) & (x < quartiles[0.75]) else False)
+    temp_dt['seuil3'] = temp_dt['prix'].apply(lambda x: True if (x >= quartiles[0.75]) &(x <= quartiles[1]) else False)
+
+    groupe[cat] = temp_dt
+
+    array = []
+    for item in groupe:
+
+      dict = {
+        'categorie': item,
+        'seuil1': groupe[item]['seuil1'].value_counts()[True],
+        'seuil2': groupe[item]['seuil2'].value_counts()[True],
+        'seuil3': groupe[item]['seuil3'].value_counts()[True],
+        'total_count':groupe[item]['seuil3'].value_counts()[True] + groupe[item]['seuil3'].value_counts()[False]
+
+
+
+      }
+      array.append(dict)
+    df_order = pd.DataFrame.from_dict(array)
+
+  df_order.sort_values(['total_count'],inplace=True, ascending=False)
+
+  return df_order
