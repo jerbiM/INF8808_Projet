@@ -6,13 +6,30 @@ def barchart_gratuit(df):
 	fig = px.bar(df, x='groupe', y=["événements_gratuits", "événement_payant"] )
 
 	fig.update_layout(
-		title="Barchart pour les événements gratuits et payants.",
-		xaxis_title="Régions au Québec",
+		#title="Barchart pour les événements gratuits et payants.",
+		xaxis_title="Régions du Québec",
 		yaxis_title="Nombre d'évènements",
 
 	)
 	return fig
+
+
+
+
+def barchart_filtrage(df):
+
+
+
+	fig = px.bar(df, x='categorie', y=['seuil1','seuil2','seuil3'] )
+
+	fig.update_layout(
+		#title="Barchart pour les événements gratuits et payants.",
+		xaxis_title="Catégories",
+		yaxis_title="Nombre d'évènements",
+
+	)
 	#fig.show()
+	return fig
 
 
 
