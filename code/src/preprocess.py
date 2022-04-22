@@ -80,6 +80,25 @@ def group_by_year_month(df, chosenYear, chosenMonth):
     print('22222222222222222222222DataFrame is empty!')
   return newDFMonth
 
+
+def group_by_year_month_price(df, chosenYear, chosenMonth, chosenPrice):
+    #print(sorted(df["year"].unique()) )
+    newDf = df[df.year == chosenYear]
+    newDFMonth = newDf[newDf.month == chosenMonth]
+    
+    newDFMonth["prix"] = pd.to_numeric(newDFMonth["prix"], downcast="float")
+    minPrice = pd.to_numeric(chosenPrice[0], downcast="float")
+    maxPrice = pd.to_numeric(chosenPrice[1], downcast="float")
+    
+    newDFPriceMin = newDFMonth[minPrice <= newDFMonth['prix']]
+    newDFPrice = newDFPriceMin[newDFPriceMin['prix'] <= maxPrice]
+    print(newDFPrice)
+    if newDFPrice.empty:
+        print('22222222222222222222222DataFrame is empty!')
+    return newDFPrice  
+  
+
+
 def group_by_year_month_region(df, chosenYear, chosenMonth, chosenRegion):
   #print("ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",chosenRegion)
   newDf = df[df.year == chosenYear]
@@ -92,6 +111,28 @@ def group_by_year_month_region(df, chosenYear, chosenMonth, chosenRegion):
     print('22222222222222222222222DataFrame Region is empty!')
   #print(newDFMonth)
   return newDFRegion
+
+
+def group_by_year_month_region_price(df, chosenYear, chosenMonth, chosenRegion, chosenPrice):
+    # print("ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",chosenPrice)
+    newDf = df[df.year == chosenYear]
+    newDFMonth = newDf[newDf.month == chosenMonth]
+    newDFRegion = newDFMonth[newDFMonth.region == chosenRegion]
+    print("kkooooooooooooooooooooooooooook")
+    print(newDFRegion['prix'])
+
+    newDFRegion["prix"] = pd.to_numeric(newDFRegion["prix"], downcast="float")
+    minPrice = pd.to_numeric(chosenPrice[0], downcast="float")
+    maxPrice = pd.to_numeric(chosenPrice[1], downcast="float")
+    print('AFTER=',newDFRegion['prix'])
+    newDFPriceMin = newDFRegion[minPrice <= newDFRegion['prix']]
+    newDFPrice = newDFPriceMin[newDFPriceMin['prix'] <= maxPrice]
+    print(newDFPrice)
+    
+    if newDFPrice.empty:
+        print('22222222222222222222222DataFrame Region is empty!')
+    return newDFPrice
+
 
 def group_by_month(df, chosenMonth):
   newDFMonth = df[df.month == chosenMonth]
