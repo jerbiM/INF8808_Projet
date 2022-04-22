@@ -3,10 +3,16 @@ import plotly.express as px
 def barchart_gratuit(df):
 
 
-	fig = px.bar(df, x='groupe', y=["événements_gratuits", "événement_payant"] )
+	fig = px.bar(df, x='groupe', y=['événements_gratuits','événement_payant'],
+
+	             color_discrete_map={
+		             'événements_gratuits': '#DDB5B5',
+		             'événement_payant': '#840921'
+	             }
+	             )
 
 	fig.update_layout(
-		#title="Barchart pour les événements gratuits et payants.",
+
 		xaxis_title="Régions du Québec",
 		yaxis_title="Nombre d'évènements",
 
@@ -20,10 +26,17 @@ def barchart_filtrage(df):
 
 
 
-	fig = px.bar(df, x='categorie', y=['seuil1','seuil2','seuil3'] )
+	fig = px.bar(df, x='categorie', y=['seuil1','seuil2','seuil3'],
+	color_discrete_map = {
+		'seuil1': '#D7B1D3',
+		'seuil2': '#B71184',
+		'seuil3': '#6F0A55',
+
+	}
+	)
 
 	fig.update_layout(
-		#title="Barchart pour les événements gratuits et payants.",
+
 		xaxis_title="Catégories",
 		yaxis_title="Nombre d'évènements",
 
