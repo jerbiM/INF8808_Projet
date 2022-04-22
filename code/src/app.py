@@ -7,15 +7,35 @@ import plotly.graph_objects as go
 import preprocess as preproc
 import sankey
 import stackedBarChart
+import mapViz
 import heatmap
 # import pymsgbox
 import barchart
+import json
+
+# Load informations from geojson file to create the map of Quebec
+with open("assets/regions_quebec.geojson", "r") as response:
+    qc = json.load(response)
+
+import pandas as pd
+
+import plotly.express as px
 
 app = dash.Dash(__name__)
 app.title = 'Projet | INF8808'
 
 df_file = "assets/df_ghaliUpdated.csv"
 df = preproc.to_df(df_file)
+
+dfEventsCount = preproc.group_by_column_count(df, 'region')
+# Create df from result obtained from dfEventsCount
+d = {'region': ['Abitibi-Temiscamingue', 'Bas-Saint-Laurent', 'Capitale-Nationale', 'Centre-du-Quebec',
+                'Chaudiere-Appalaches', 'Cote-Nord', 'Estrie', 'Gaspesie-iles-de-la-Madeleine',
+                'Lanaudiere', 'Laurentides', 'Laval', 'Mauricie', 'Montreal', 'Monteregie', 
+                'Nord-du-Quebec', 'Outaouais', 'Saguenay - Lac-Saint-Jean'],
+     'nombreEvenements': [63, 124, 1382, 1103, 99, 16, 578, 68, 480, 491, 177, 1216, 14693, 1715, 1, 282, 182]}
+dfMap = pd.DataFrame(data=d)
+
 # data preparation
 repartition_region = preproc.to_df("assets/repartion_region.csv")
 clusters = preproc.add_cluster(repartition_region)
@@ -32,7 +52,7 @@ clus_est_gratuit_data = preproc.group_by_column2_count(
 df_barchart = preproc.data_prepartion_barchart_gratuit(
     new_df, clus_est_gratuit_data)
 
-
+fig8 = mapViz.mapQuebec(dfMap, qc)
 fig1 = stackedBarChart.stackedBarChart(df_2016)
 fig2 = sankey.sankey_diagram_g_cat(new_df)
 fig3 = sankey.sankey_diagram_r_cat(new_df, 'Centre')
@@ -44,7 +64,7 @@ fig7 = barchart.barchart_gratuit(df_barchart)
 
 
 # fig4.write_html("index4.html")
-def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
+def init_app_layout(fig8, fig1, fig2, fig3, fig4, fig5, fig6):
 
     return html.Div(className='content', children=[
         html.Header(children=[
@@ -54,7 +74,18 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
         html.Main(children=[
             html.Div([
                 html.Div([
-
+                    html.Div([
+                        dcc.Graph(figure=fig8,
+                                  config=dict(
+                                      scrollZoom=False,
+                                      showTips=False,
+                                      showAxisDragHandles=False,
+                                      doubleClick=False,
+                                      displayModeBar=False
+                                  ),
+                                  className='graph',
+                                  id='viz_8')
+                    ]),
                     html.Div([
                         dcc.Dropdown(
                             options=[
@@ -97,7 +128,8 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
                                 {'label': 'Laval', 'value': 'Laval (13)'},
                                 {'label': 'Mauricie', 'value': 'Mauricie'},
                                 {'label': 'Montérégie', 'value': 'Montérégie'},
-                                {'label': 'Montréal', 'value': 'Montréal (06)'},
+                                {'label': 'Montréal',
+                                    'value': 'Montréal (06)'},
                                 {'label': 'Nord-du-Québec',
                                     'value': 'Nord-du-Québec'},
                                 {'label': 'Outaouais', 'value': 'Outaouais'},
@@ -145,7 +177,7 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
                     ),
                     #dcc.Input(type='text', id='maxPrice'),
                 ]),
-                    #style={"display": "grid", "grid-template-columns": "10% 40% 10%"})
+                # style={"display": "grid", "grid-template-columns": "10% 40% 10%"})
 
             ]),
             # html.Div(className='viz-container', children=[
@@ -274,7 +306,7 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
     ])
 
 
-app.layout = init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6)
+app.layout = init_app_layout(fig8, fig1, fig2, fig3, fig4, fig5, fig6)
 
 
 with open('indexViz_alpha.html', 'a') as f:
@@ -309,9 +341,9 @@ def figWithNewDf(selected_year, selected_month, selected_region, selected_price)
         return stackedBarChart.stackedBarChart(preproc.group_by_year_month_price(
             df, int(selected_year), int(selected_month), selected_price))
     else:
-        #return stackedBarChart.stackedBarChart(preproc.group_by_year_month_region(
-            #df, int(selected_year), int(selected_month), selected_region))
-        
+        # return stackedBarChart.stackedBarChart(preproc.group_by_year_month_region(
+        # df, int(selected_year), int(selected_month), selected_region))
+
         return stackedBarChart.stackedBarChart(preproc.group_by_year_month_region_price(
             df, int(selected_year), int(selected_month), selected_region, selected_price))
     # if new_df_selected.empty:
