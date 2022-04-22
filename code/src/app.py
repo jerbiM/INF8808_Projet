@@ -35,6 +35,7 @@ clus_est_gratuit_data = preproc.group_by_column2_count(
 df_barchart = preproc.data_prepartion_barchart_gratuit(
     df_sankey, clus_est_gratuit_data)
 
+df_barchart_prix=preproc.data_prepartion_barchart_par_prix(new_df,"Montréal")
 
 fig1 = stackedBarChart.stackedBarChart(df_2016)
 fig2 = sankey.sankey_diagram_g_cat(df_sankey)
@@ -44,7 +45,7 @@ fig4 = heatmap.make_heatmap(df_preprocessed, years=set([2019, 2020]))
 fig5 = sankey.sankey_diagram_r_cat(df_sankey, 'Sud')
 fig6 = sankey.sankey_diagram_g_scat(df_sankey, 'ArtsVisuels')
 fig7 = barchart.barchart_gratuit(df_barchart)
-
+fig8=barchart.barchart_filtrage(df_barchart_prix)
 
 # fig4.write_html("index4.html")
 def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
@@ -259,6 +260,21 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
                     ),
                     className='graph',
                     id='viz_7'
+                )
+            ]),
+            
+              html.Div(className='viz-container', children=[
+                html.H2('Barchart pour la distribution du prix selon les catégories.'),
+                dcc.Graph(
+                    figure=fig8,
+                    config=dict(
+                        scrollZoom=False,
+                        showTips=False,
+                        showAxisDragHandles=False,
+                        displayModeBar=False
+                    ),
+                    className='graph',
+                    id='viz_8'
                 )
             ])
         ])
