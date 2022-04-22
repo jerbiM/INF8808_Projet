@@ -7,9 +7,19 @@ import plotly.graph_objects as go
 import preprocess as preproc
 import sankey
 import stackedBarChart
+import mapViz
 import heatmap
 # import pymsgbox
 import barchart
+import json
+
+# Load informations from geojson file to create the map of Quebec
+with open("assets/regions_quebec.geojson", "r") as response:
+    qc = json.load(response)
+
+import pandas as pd
+
+import plotly.express as px
 
 app = dash.Dash(__name__)
 app.title = 'Projet | INF8808'
@@ -17,7 +27,15 @@ app.title = 'Projet | INF8808'
 df_file = "assets/df_ghaliUpdated.csv"
 df = preproc.to_df(df_file)
 
-df_N = preproc.to_df("assets/df_Nina.csv")
+dfEventsCount = preproc.group_by_column_count(df, 'region')
+# Create df from result obtained from dfEventsCount
+d = {'region': ['Abitibi-Temiscamingue', 'Bas-Saint-Laurent', 'Capitale-Nationale', 'Centre-du-Quebec',
+                'Chaudiere-Appalaches', 'Cote-Nord', 'Estrie', 'Gaspesie-iles-de-la-Madeleine',
+                'Lanaudiere', 'Laurentides', 'Laval', 'Mauricie', 'Montreal', 'Monteregie', 
+                'Nord-du-Quebec', 'Outaouais', 'Saguenay - Lac-Saint-Jean'],
+     'nombreEvenements': [63, 124, 1382, 1103, 99, 16, 578, 68, 480, 491, 177, 1216, 14693, 1715, 1, 282, 182]}
+dfMap = pd.DataFrame(data=d)
+
 # data preparation
 repartition_region = preproc.to_df("assets/repartion_region.csv")
 montreal_quartier = preproc.to_df("assets/df_montreal.csv")
@@ -35,8 +53,7 @@ clus_est_gratuit_data = preproc.group_by_column2_count(
 df_barchart = preproc.data_prepartion_barchart_gratuit(
     df_sankey, clus_est_gratuit_data)
 
-df_barchart_prix=preproc.data_prepartion_barchart_par_prix(new_df,"Montréal")
-
+fig9 = mapViz.mapQuebec(dfMap, qc)
 fig1 = stackedBarChart.stackedBarChart(df_2016)
 fig2 = sankey.sankey_diagram_g_cat(df_sankey)
 fig3 = sankey.sankey_diagram_r_cat(df_sankey, 'Centre')
@@ -48,7 +65,7 @@ fig7 = barchart.barchart_gratuit(df_barchart)
 fig8=barchart.barchart_filtrage(df_barchart_prix)
 
 # fig4.write_html("index4.html")
-def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
+def init_app_layout(fig9, fig1, fig2, fig3, fig4, fig5, fig6):
 
     return html.Div(className='content', children=[
         html.Header(children=[
@@ -58,7 +75,18 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
         html.Main(children=[
             html.Div([
                 html.Div([
-
+                    html.Div([
+                        dcc.Graph(figure=fig9,
+                                  config=dict(
+                                      scrollZoom=False,
+                                      showTips=False,
+                                      showAxisDragHandles=False,
+                                      doubleClick=False,
+                                      displayModeBar=False
+                                  ),
+                                  className='graph',
+                                  id='viz_9')
+                    ]),
                     html.Div([
                         dcc.Dropdown(
                             options=[
@@ -135,21 +163,21 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
                     step=1,
                     value='12'
                 ),
-                html.Label(['Choisir le prix en CAD'],
+                html.Label(['Choisir le range du prix en CAD'],
                            style={'font-weight': 'bold'}),
                 html.Div([
-                    dcc.Input(type='text', id='minPrice'),
+                    #dcc.Input(type='text', id='minPrice'),
                     dcc.RangeSlider(
                         id='PriceSlider',
                         min=0,
                         max=1000,
                         value=[0, 1000],
-                        step=250,
+                        step=50,
                         allowCross=False
                     ),
-                    dcc.Input(type='text', id='maxPrice'),
-                ],
-                    style={"display": "grid", "grid-template-columns": "10% 40% 10%"})
+                    #dcc.Input(type='text', id='maxPrice'),
+                ]),
+                # style={"display": "grid", "grid-template-columns": "10% 40% 10%"})
 
             ]),
             # html.Div(className='viz-container', children=[
@@ -281,7 +309,7 @@ def init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6):
     ])
 
 
-app.layout = init_app_layout(fig1, fig2, fig3, fig4, fig5, fig6)
+app.layout = init_app_layout(fig9, fig1, fig2, fig3, fig4, fig5, fig6)
 
 
 with open('indexViz_alpha.html', 'a') as f:
@@ -311,11 +339,14 @@ def figWithNewDf(selected_year, selected_month, selected_region, selected_price)
     print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
     if selected_region == 'Toutes les régions':
         print('ICI')
-        return stackedBarChart.stackedBarChart(preproc.group_by_year_month(
-            df, int(selected_year), int(selected_month)))
+        return stackedBarChart.stackedBarChart(preproc.group_by_year_month_price(
+            df, int(selected_year), int(selected_month), selected_price))
     else:
-        return stackedBarChart.stackedBarChart(preproc.group_by_year_month_region(
-            df, int(selected_year), int(selected_month), selected_region))
+        # return stackedBarChart.stackedBarChart(preproc.group_by_year_month_region(
+        # df, int(selected_year), int(selected_month), selected_region))
+
+        return stackedBarChart.stackedBarChart(preproc.group_by_year_month_region_price(
+            df, int(selected_year), int(selected_month), selected_region, selected_price))
     # if new_df_selected.empty:
         # pymsgbox.alert('Pas d''événements pour la période choisie.', 'Avertissement')
         
@@ -430,6 +461,4 @@ def display(clicks_fig, figure): # noqa : E501 pylint: disable=unused-argument t
         return [sankey.change_color_node(figure, click_index)]
 
     return figure
-
-
 
