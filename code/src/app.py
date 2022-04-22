@@ -43,6 +43,8 @@ repartition_region = preproc.to_df("assets/repartion_region.csv")
 montreal_quartier = preproc.to_df("assets/df_montreal.csv")
 clusters = preproc.add_cluster(repartition_region, montreal_quartier)
 
+new_df = preproc.add_clusters(df, clusters)
+
 df_sankey = preproc.add_clusters(df_N, clusters)
 
 df_2016 = preproc.group_by_year_month(df, 2016, 12)
@@ -54,6 +56,7 @@ clus_est_gratuit_data = preproc.group_by_column2_count(
     df_sankey, 'groupe', 'est_gratuit')
 df_barchart = preproc.data_prepartion_barchart_gratuit(
     df_sankey, clus_est_gratuit_data)
+df_barchart_prix=preproc.data_prepartion_barchart_par_prix(new_df,"Montréal")
 
 fig9 = mapViz.mapQuebec(dfMap, qc)
 fig1 = stackedBarChart.stackedBarChart(df_2016)
