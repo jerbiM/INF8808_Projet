@@ -27,6 +27,8 @@ app.title = 'Projet | INF8808'
 df_file = "assets/df_ghaliUpdated.csv"
 df = preproc.to_df(df_file)
 
+df_N = preproc.to_df("assets/df_Nina.csv")
+
 dfEventsCount = preproc.group_by_column_count(df, 'region')
 # Create df from result obtained from dfEventsCount
 d = {'region': ['Abitibi-Temiscamingue', 'Bas-Saint-Laurent', 'Capitale-Nationale', 'Centre-du-Quebec',
