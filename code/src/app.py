@@ -24,7 +24,7 @@ import plotly.express as px
 app = dash.Dash(__name__)
 app.title = 'Projet | INF8808'
 
-df_file = "assets/df_ghaliUpdated.csv"
+df_file = "assets/df_Maroua.csv"
 df = preproc.to_df(df_file)
 
 df_N = preproc.to_df("assets/df_Nina.csv")
@@ -47,7 +47,7 @@ new_df = preproc.add_clusters(df, clusters)
 
 df_sankey = preproc.add_clusters(df_N, clusters)
 
-df_2016 = preproc.group_by_year_month(df, 2016, 12)
+df_2021 = preproc.group_by_year_month(df, 2021, 12)
 
 df_file_preprocessed = "assets/df.csv"
 df_preprocessed = preproc.to_df(df_file_preprocessed)
@@ -56,10 +56,10 @@ clus_est_gratuit_data = preproc.group_by_column2_count(
     df_sankey, 'groupe', 'est_gratuit')
 df_barchart = preproc.data_prepartion_barchart_gratuit(
     df_sankey, clus_est_gratuit_data)
-df_barchart_prix=preproc.data_prepartion_barchart_par_prix(new_df,"Montréal")
+#df_barchart_prix=preproc.data_prepartion_barchart_par_prix(new_df,"Montréal")
 
 fig9 = mapViz.mapQuebec(dfMap, qc)
-fig1 = stackedBarChart.stackedBarChart(df_2016)
+fig1 = stackedBarChart.stackedBarChart(df_2021)
 fig2 = sankey.sankey_diagram_g_cat(df_sankey)
 fig3 = sankey.sankey_diagram_r_cat(df_sankey, 'Centre')
 # fig4 = sankey.sankey_diagram_g_scat(new_df, 'Musique')
@@ -67,7 +67,7 @@ fig4 = heatmap.make_heatmap(df_preprocessed, years=set([2019, 2020]))
 fig5 = sankey.sankey_diagram_r_cat(df_sankey, 'Sud')
 fig6 = sankey.sankey_diagram_g_scat(df_sankey, 'ArtsVisuels')
 fig7 = barchart.barchart_gratuit(df_barchart)
-fig8=barchart.barchart_filtrage(df_barchart_prix)
+#fig8=barchart.barchart_filtrage(df_barchart_prix)
 
 # fig4.write_html("index4.html")
 def init_app_layout(fig9, fig1, fig2, fig3, fig4, fig5, fig6):
@@ -108,7 +108,7 @@ def init_app_layout(fig9, fig1, fig2, fig3, fig4, fig5, fig6):
                                 {'label': '2024', 'value': '2024'},
                                 {'label': '2030', 'value': '2030'}
                             ],
-                            value='2016',
+                            value='2021',
                             id='dropdownYear'
                         ),
                     ], style={'width': '48%', 'display': 'inline-block'}),
@@ -298,17 +298,17 @@ def init_app_layout(fig9, fig1, fig2, fig3, fig4, fig5, fig6):
             
               html.Div(className='viz-container', children=[
                 html.H2('Barchart pour la distribution du prix selon les catégories.'),
-                dcc.Graph(
-                    figure=fig8,
-                    config=dict(
-                        scrollZoom=False,
-                        showTips=False,
-                        showAxisDragHandles=False,
-                        displayModeBar=False
-                    ),
-                    className='graph',
-                    id='viz_8'
-                )
+                #dcc.Graph(
+                    #figure=fig8,
+                    #config=dict(
+                        #scrollZoom=False,
+                        #showTips=False,
+                        #showAxisDragHandles=False,
+                        #displayModeBar=False
+                    #),
+                    #className='graph',
+                    #id='viz_8'
+                #)
             ])
         ])
     ])

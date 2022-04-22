@@ -75,14 +75,14 @@ def group_by_year_month(df, chosenYear, chosenMonth):
   #print(sorted(df["year"].unique()) )
   newDf = df[df.year == chosenYear]
   newDFMonth = newDf[newDf.month == chosenMonth]
-  print(newDFMonth)
+  #print(newDFMonth)
   if newDFMonth.empty:
     print('22222222222222222222222DataFrame is empty!')
   return newDFMonth
 
 
 def group_by_year_month_price(df, chosenYear, chosenMonth, chosenPrice):
-    #print(sorted(df["year"].unique()) )
+    print(sorted(df["year"].unique()) )
     newDf = df[df.year == chosenYear]
     newDFMonth = newDf[newDf.month == chosenMonth]
     
@@ -92,7 +92,7 @@ def group_by_year_month_price(df, chosenYear, chosenMonth, chosenPrice):
     
     newDFPriceMin = newDFMonth[minPrice <= newDFMonth['prix']]
     newDFPrice = newDFPriceMin[newDFPriceMin['prix'] <= maxPrice]
-    print(newDFPrice)
+    #print(newDFPrice)
     if newDFPrice.empty:
         print('22222222222222222222222DataFrame is empty!')
     return newDFPrice  
@@ -109,7 +109,7 @@ def group_by_year_month_region(df, chosenYear, chosenMonth, chosenRegion):
   #print(newDFRegion)
   if newDFRegion.empty:
     print('22222222222222222222222DataFrame Region is empty!')
-  #print(newDFMonth)
+  print(newDFMonth)
   return newDFRegion
 
 
@@ -118,16 +118,16 @@ def group_by_year_month_region_price(df, chosenYear, chosenMonth, chosenRegion, 
     newDf = df[df.year == chosenYear]
     newDFMonth = newDf[newDf.month == chosenMonth]
     newDFRegion = newDFMonth[newDFMonth.region == chosenRegion]
-    print("kkooooooooooooooooooooooooooook")
-    print(newDFRegion['prix'])
+    #print("kkooooooooooooooooooooooooooook")
+    #print(newDFRegion['prix'])
 
     newDFRegion["prix"] = pd.to_numeric(newDFRegion["prix"], downcast="float")
     minPrice = pd.to_numeric(chosenPrice[0], downcast="float")
     maxPrice = pd.to_numeric(chosenPrice[1], downcast="float")
-    print('AFTER=',newDFRegion['prix'])
+    #print('AFTER=',newDFRegion['prix'])
     newDFPriceMin = newDFRegion[minPrice <= newDFRegion['prix']]
     newDFPrice = newDFPriceMin[newDFPriceMin['prix'] <= maxPrice]
-    print(newDFPrice)
+    #print(newDFPrice)
     
     if newDFPrice.empty:
         print('22222222222222222222222DataFrame Region is empty!')
@@ -136,7 +136,7 @@ def group_by_year_month_region_price(df, chosenYear, chosenMonth, chosenRegion, 
 
 def group_by_month(df, chosenMonth):
   newDFMonth = df[df.month == chosenMonth]
-  print(newDFMonth)
+  #print(newDFMonth)
   return newDFMonth
 
 def data_prepartion_barchart_gratuit(df,cluster):
