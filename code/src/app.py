@@ -12,7 +12,13 @@ import heatmap
 # import pymsgbox
 import barchart
 import json
+import os
 
+
+print("Current path : " + os.getcwd())
+print("Folders in path : ", os.listdir('.'))
+
+os.chdir("code/src")
 # Load informations from geojson file to create the map of Quebec
 with open("assets/regions_quebec.geojson", "r") as response:
     qc = json.load(response)
