@@ -268,7 +268,8 @@ def init_app_layout(fig9, fig1, fig2, fig3, fig4, fig5, fig6):
                              className="title-montreal")
                 ])
             ]),
-            html.Div(className='viz-container', children=[
+            html.Div(className='viz-container', children=[ 
+                html.Div(id='sankey-container',children=[
                 dcc.Graph(
                     figure=fig2,
                     config=dict(
@@ -279,7 +280,8 @@ def init_app_layout(fig9, fig1, fig2, fig3, fig4, fig5, fig6):
                     ),
                     className='graph',
                     id='sankey'
-                )
+                )]),
+                html.Div(dbc.Button("Retour au graphique initial", color="primary", id="reset-sankey"), className='sankey-btn', id='sankey-btn',  style={'visibility':'hidden'})
             ]),
 
             html.Div(className='viz-container', children=[
@@ -356,11 +358,34 @@ def figWithNewDf(selected_year, selected_month, selected_region, selected_price)
         # pymsgbox.alert('Pas d''événements pour la période choisie.', 'Avertissement')
         
 @app.callback(
+    [Output('sankey-container', 'children')],
+    [Input('reset-sankey', 'n_clicks')],
+    [State('sankey-container', 'children')]
+)    
+def restore_sankey(n_clicks, children):
+    ctx = dash.callback_context
+
+    if not ctx.triggered:
+        return children
+
+    return [dcc.Graph(
+                    figure=sankey.sankey_diagram_g_cat(df_sankey),
+                    config=dict(
+                        scrollZoom=False,
+                        showTips=False,
+                        showAxisDragHandles=False,
+                        displayModeBar=False
+                    ),
+                    className='graph',
+                    id='sankey'
+                )]
+@app.callback(
     [Output('sankey', 'figure')],
+    [Output('sankey-btn', 'style')],
     [Input('sankey', 'clickData')],
     [State('sankey', 'figure')]
 )
-def display(clicks_fig, figure): # noqa : E501 pylint: disable=unused-argument too-many-arguments line-too-long
+def display_sankey(clicks_fig, figure): # noqa : E501 pylint: disable=unused-argument too-many-arguments line-too-long
     '''
         This function handles clicks on the map. When a
         marker is clicked, a new figure is displayed.
@@ -378,40 +403,44 @@ def display(clicks_fig, figure): # noqa : E501 pylint: disable=unused-argument t
             style: The updated display style for the panel
     '''
     ctx = dash.callback_context
-    
+
     if not ctx.triggered[0]['value']:
-        return [figure]
+        return [figure, {'visibility':'hidden'}]
 
     if not ctx.triggered[0]['value']['points'][0]['label']:
         #link -> modify color with its index
 
-        #find what is the diagramm
+        button = False
+        #find what is the diagramm 
         if "Nord" in ctx.states['sankey.figure']['data'][0]['node']['label']:
-            #group with ?
+            #group with ? 
             if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
                 #group with categ
                 fig = sankey.sankey_diagram_g_cat(df_sankey).to_dict()
             else:
-                #group with sous cat
+                #group with sous cat 
                 cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split()[-1]
                 fig = sankey.sankey_diagram_g_scat(df_sankey, cond2).to_dict()
         
-        else :
-            #region with ?
+        else : 
+            #region with ? 
+            bouton = True
             cond = ctx.states['sankey.figure']['layout']['title']['text'].split()[6]
             if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
                 #group with categ
                 fig = sankey.sankey_diagram_r_cat(df_sankey, cond).to_dict()
             else:
-                #group with sous cat
+                #group with sous cat 
                 cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split()[-1]
                 fig = sankey.sankey_diagram_reg_scat(df_sankey, cond, cond2).to_dict()
 
         
         click_index = ctx.triggered[0]['value']['points'][0]['index']
-        return [sankey.change_color_link(figure, click_index)]
+        if button : 
+            return [sankey.change_color_link(figure, click_index), {'visibility':'visible'}]
+        return [sankey.change_color_link(figure, click_index), {'visibility':'hidden'}]
     
-    #node -> modify
+    #node -> modify 
     
     click_node = ctx.triggered[0]['value']['points'][0]['label']
 
@@ -421,49 +450,27 @@ def display(clicks_fig, figure): # noqa : E501 pylint: disable=unused-argument t
     node_sous_cat = list(df_sankey['sousCategorie'].unique())
     
    
-    #check in which case we are
-    # if in node_region or node_sous_cat --> change color
+    #check in which case we are 
+    # if in node_region or node_sous_cat --> change color 
     #else : change diagramm
 
     if click_node in node_group:
         if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
-            return [sankey.sankey_diagram_r_cat(df_sankey, click_node)]
+            return [sankey.sankey_diagram_r_cat(df_sankey, click_node), {'visibility':'visible'}]
         cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split()[-1]
-        return [sankey.sankey_diagram_reg_scat(df_sankey, click_node, cond2)]
+        return [sankey.sankey_diagram_reg_scat(df_sankey, click_node, cond2), {'visibility':'visible'}]
     
-    elif click_node in node_cat:
+    elif click_node in node_cat and click_node != 'Humour' and click_node != 'Cirque' and click_node != 'Danse':
         if "Nord" in ctx.states['sankey.figure']['data'][0]['node']['label']:
-            return [sankey.sankey_diagram_g_scat(df_sankey, click_node)]
+            return [sankey.sankey_diagram_g_scat(df_sankey, click_node), {'visibility':'visible'}]
         cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split()[6]
 
-        return [sankey.sankey_diagram_reg_scat(df_sankey, cond2, click_node)]
+        return [sankey.sankey_diagram_reg_scat(df_sankey, cond2, click_node), {'visibility':'visible'}]
     
-    elif click_node in node_region or click_node in node_sous_cat:
-
-        #change color
-        if "Nord" in ctx.states['sankey.figure']['data'][0]['node']['label']:
-            #group with ?
-            if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
-                #group with categ
-                fig = sankey.sankey_diagram_g_cat(df_sankey).to_dict()
-            else:
-                #group with sous cat
-                cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split()[-1]
-                fig = sankey.sankey_diagram_g_scat(df_sankey, cond2).to_dict()
+    elif click_node in node_region or click_node in node_sous_cat or click_node == 'Humour' or click_node == 'Cirque' or click_node == 'Danse':
+        #change color 
         
-        else :
-            #region with ?
-            cond = ctx.states['sankey.figure']['layout']['title']['text'].split()[6]
-            if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
-                #group with categ
-                fig = sankey.sankey_diagram_r_cat(df_sankey, cond).to_dict()
-            else:
-                #group with sous cat
-                cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split()[-1]
-                fig = sankey.sankey_diagram_reg_scat(df_sankey, cond, cond2).to_dict()
-
         click_index = ctx.triggered[0]['value']['points'][0]['index']
-        return [sankey.change_color_node(figure, click_index)]
+        return [sankey.change_color_node(figure, click_index), {'visibility':'visible'}]
 
-    return figure
-
+    return [figure, {'visibility':'hidden'}]
