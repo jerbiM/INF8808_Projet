@@ -28,7 +28,7 @@ app.title = 'Projet | INF8808'
 df_file = "assets/df_Maroua.csv"
 df = preproc.to_df(df_file)
 
-df_N = preproc.to_df("assets/df_Nina.csv")
+df_N = preproc.to_df("assets/df_Nina_v3.csv")
 
 #dfEventsCount = preproc.group_by_column_count(df, 'region')
 # Create df from result obtained from dfEventsCount
@@ -55,9 +55,8 @@ df_preprocessed = preproc.to_df(df_file_preprocessed)
 
 clus_est_gratuit_data = preproc.group_by_column2_count(
     df_sankey, 'groupe', 'est_gratuit')
-df_barchart = preproc.data_prepartion_barchart_gratuit(
+df_barchart_gratuit = preproc.data_prepartion_barchart_gratuit(
     df_sankey, clus_est_gratuit_data)
-# df_barchart_prix=preproc.data_prepartion_barchart_par_prix(new_df,"Montréal")
 
 # DataFrame for LineChart
 df['count'] = 1
@@ -67,7 +66,9 @@ dfa = preproc.group_by_selected_category(dfa, 'Musique')
 
 df_final = dfa[['year', 'categorie', 'region', 'count']].groupby(
     ['year', 'categorie', 'region'], as_index=False).sum()
-print(df_final)
+#print(df_final)
+
+df_barchart_prix=preproc.data_prepartion_barchart_par_prix(df_sankey,"Montréal")
 
 fig10 = lineChart.lineChart(df_final)
 fig9 = mapViz.mapQuebec(dfMap, qc)
@@ -78,8 +79,8 @@ fig3 = sankey.sankey_diagram_r_cat(df_sankey, 'Centre')
 fig4 = heatmap.make_heatmap(df_preprocessed, years=set([2019, 2020]))
 fig5 = sankey.sankey_diagram_r_cat(df_sankey, 'Sud')
 fig6 = sankey.sankey_diagram_g_scat(df_sankey, 'ArtsVisuels')
-fig7 = barchart.barchart_gratuit(df_barchart)
-# fig8=barchart.barchart_filtrage(df_barchart_prix)
+fig7 = barchart.barchart_gratuit(df_barchart_gratuit)
+fig8=barchart.barchart_filtrage(df_barchart_prix)
 
 # fig4.write_html("index4.html")
 
@@ -147,20 +148,20 @@ def init_app_layout(fig10, fig9, fig1, fig2, fig3, fig4, fig5, fig6):
                     html.Div([
                         dcc.Dropdown(
                             options=[
-                                {'label': '2012', 'value': '2012'},
-                                {'label': '2015', 'value': '2015'},
-                                {'label': '2016', 'value': '2016'},
-                                {'label': '2017', 'value': '2017'},
-                                {'label': '2018', 'value': '2018'},
-                                {'label': '2019', 'value': '2019'},
-                                {'label': '2020', 'value': '2020'},
-                                {'label': '2021', 'value': '2021'},
-                                {'label': '2022', 'value': '2022'},
-                                {'label': '2023', 'value': '2023'},
-                                {'label': '2024', 'value': '2024'},
-                                {'label': '2030', 'value': '2030'}
+                                {'label': '2012', 'value': 2012},
+                                {'label': '2015', 'value': 2015},
+                                {'label': '2016', 'value': 2016},
+                                {'label': '2017', 'value': 2017},
+                                {'label': '2018', 'value': 2018},
+                                {'label': '2019', 'value': 2019},
+                                {'label': '2020', 'value': 2020},
+                                {'label': '2021', 'value': 2021},
+                                {'label': '2022', 'value': 2022},
+                                {'label': '2023', 'value': 2023},
+                                {'label': '2024', 'value': 2024},
+                                {'label': '2030', 'value': 2030}
                             ],
-                            value='2021',
+                            value=2021,
                             id='dropdownYear'
                         ),
                     ], style={'width': '48%', 'display': 'inline-block'}),
@@ -352,17 +353,17 @@ def init_app_layout(fig10, fig9, fig1, fig2, fig3, fig4, fig5, fig6):
             html.Div(className='viz-container', children=[
                 html.H2(
                     'Barchart pour la distribution du prix selon les catégories.'),
-                # dcc.Graph(
-                # figure=fig8,
-                # config=dict(
-                # scrollZoom=False,
-                # showTips=False,
-                # showAxisDragHandles=False,
-                # displayModeBar=False
-                # ),
-                # className='graph',
-                # id='viz_8'
-                # )
+                dcc.Graph(
+                figure=fig8,
+                config=dict(
+                scrollZoom=False,
+                showTips=False,
+                showAxisDragHandles=False,
+                displayModeBar=False
+                ),
+                className='graph',
+                id='viz_8'
+                )
             ])
         ])
     ])
@@ -371,15 +372,15 @@ def init_app_layout(fig10, fig9, fig1, fig2, fig3, fig4, fig5, fig6):
 app.layout = init_app_layout(fig10, fig9, fig1, fig2, fig3, fig4, fig5, fig6)
 
 
-with open('indexViz_alpha.html', 'a') as f:
-    f.write(fig1.to_html(full_html=False, include_plotlyjs='cdn'))
-    f.write(fig2.to_html(full_html=False, include_plotlyjs='cdn'))
-    f.write(fig3.to_html(full_html=False, include_plotlyjs='cdn'))
-    f.write(fig4.to_html(full_html=False, include_plotlyjs='cdn'))
-    f.write(fig5.to_html(full_html=False, include_plotlyjs='cdn'))
-    f.write(fig6.to_html(full_html=False, include_plotlyjs='cdn'))
-    f.write(fig7.to_html(full_html=False, include_plotlyjs='cdn'))
-
+# with open('indexViz_alpha.html', 'a') as f:
+#     f.write(fig1.to_html(full_html=False, include_plotlyjs='cdn'))
+#     f.write(fig2.to_html(full_html=False, include_plotlyjs='cdn'))
+#     f.write(fig3.to_html(full_html=False, include_plotlyjs='cdn'))
+#     f.write(fig4.to_html(full_html=False, include_plotlyjs='cdn'))
+#     f.write(fig5.to_html(full_html=False, include_plotlyjs='cdn'))
+#     f.write(fig6.to_html(full_html=False, include_plotlyjs='cdn'))
+#     f.write(fig7.to_html(full_html=False, include_plotlyjs='cdn'))
+#
 
 @ app.callback(
     Output('viz_1', 'figure'),
