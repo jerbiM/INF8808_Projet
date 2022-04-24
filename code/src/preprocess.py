@@ -162,77 +162,109 @@ def group_by_price(df, chosenPrice):
     return newDFPrice  
 
 
-def data_prepartion_barchart_gratuit(df, cluster):
+def data_prepartion_barchart_gratuit(df,cluster):
 
-    regions_list = list(cluster.index.get_level_values(
-        'groupe').unique())  # labels
-    groupe = {}
-    for row in regions_list:
-        temp_dt = df.loc[df['groupe'] == row]
-        groupe[row] = temp_dt
+  regions_list = list(cluster.index.get_level_values('groupe').unique())  # labels
+  groupe = {}
+  for row in regions_list:
+    temp_dt = df.loc[df['groupe'] == row]
+    groupe[row] = temp_dt
+
+
+  array = []
+  for item in groupe:
+    dict = {
+      'groupe': item,
+      'événements_gratuits': groupe[item]['est_gratuit'].value_counts()[1],
+      'événement_payant': groupe[item]['est_gratuit'].value_counts()[0],
+      'total_count':groupe[item]['est_gratuit'].value_counts()[1]+ groupe[item]['est_gratuit'].value_counts()[0]
+
+    }
+
+
+    array.append(dict)
+
+  df_order = pd.DataFrame.from_dict(array)
+
+  df_order.sort_values(['total_count'],inplace=True, ascending=False)
+
+
+  return df_order
+
+
+def data_prepartion_barchart_par_prix(df,region):
+
+  df['prix'] = pd.to_numeric(df["prix"], downcast="float")
+
+  data = df.loc[(df["groupe"] == region)& (df["est_gratuit"] ==False)]
+
+
+
+  categorie = data['categorie'].unique().tolist()
+
+  groupe = {}
+
+  for cat in categorie:
+
+    temp_dt = pd.DataFrame()
+
+    temp_dt['prix'] = data.loc[(data["categorie"] == cat) & (data["groupe"] == region),'prix']
+
+    quant = [0, .25, 0.5, .75, 1]
+    quartiles = data['prix'].quantile(quant)
+
+    value_seuil1=round(quartiles[0],2)
+    value_seuil2=round(quartiles[0.5],2)
+    value_seuil3=round(quartiles[0.75],2)
+    value_seuil4=round(quartiles[1],2)
+
+
+    temp_dt['seuil1'] = temp_dt['prix'].apply(lambda x: True if (x >= value_seuil1) & (x < value_seuil2) else False)
+    temp_dt['seuil2'] = temp_dt['prix'].apply(lambda x: True if (x >= value_seuil2) & (x < value_seuil3) else False)
+    temp_dt['seuil3'] = temp_dt['prix'].apply(lambda x: True if (x >= value_seuil3) &(x <= value_seuil4) else False)
+
+
+
+    groupe[cat] = temp_dt
 
     array = []
     for item in groupe:
-        dict = {
-            'groupe': item,
-            'événements_gratuits': groupe[item]['est_gratuit'].value_counts()[1],
-            'événement_payant': groupe[item]['est_gratuit'].value_counts()[0],
-            'total_count': groupe[item]['est_gratuit'].value_counts()[1] + groupe[item]['est_gratuit'].value_counts()[0]
 
-        }
+      try:
+          dict = {
+              'categorie': item,
+              'seuil1': groupe[item]['seuil1'].value_counts()[True],
+              'seuil2': groupe[item]['seuil2'].value_counts()[True],
+              'seuil3': groupe[item]['seuil3'].value_counts()[True],
+              'total_count':len(groupe[item]['seuil1']),
+              'seuil1_value':value_seuil1,
+              'seuil2_value':value_seuil2,
+              'seuil3_value':value_seuil3,
+              'seuil4_value':value_seuil4,
 
-        array.append(dict)
 
+          }
+
+      except Exception :
+          if  groupe[item]['seuil1'].value_counts()[False]==len(groupe[item]['seuil1']):
+
+              up_dict = {"seuil1": 0}
+              dict.update(up_dict)
+          elif groupe[item]['seuil2'].value_counts()[False]==len(groupe[item]['seuil2']):
+
+              up_dict = {"seuil2": 0}
+              dict.update(up_dict)
+          elif groupe[item]['seuil3'].value_counts()[False]==len(groupe[item]['seuil3']):
+
+              up_dict = {"seuil3": 0}
+              dict.update(up_dict)
+
+
+
+
+      array.append(dict)
     df_order = pd.DataFrame.from_dict(array)
 
-    df_order.sort_values(['total_count'], inplace=True, ascending=False)
+  df_order.sort_values(['total_count'],inplace=True, ascending=False)
 
-    return df_order
-
-
-def data_prepartion_barchart_par_prix(df, region):
-
-    data = df.loc[(df["groupe"] == region) & (df["est_gratuit"] == False)]
-
-    categorie = data['categorie'].unique().tolist()
-
-    groupe = {}
-
-    for cat in categorie:
-
-        temp_dt = pd.DataFrame()
-
-        temp_dt['prix'] = data.loc[(data["categorie"] == cat) & (
-            data["groupe"] == region), 'prix']
-
-        quant = [0, .25, 0.5, .75, 1]
-        quartiles = data['prix'].quantile(quant)
-
-        temp_dt['seuil1'] = temp_dt['prix'].apply(lambda x: True if (
-            x >= quartiles[0]) & (x < quartiles[0.5]) else False)
-        temp_dt['seuil2'] = temp_dt['prix'].apply(lambda x: True if (
-            x >= quartiles[0.5]) & (x < quartiles[0.75]) else False)
-        temp_dt['seuil3'] = temp_dt['prix'].apply(lambda x: True if (
-            x >= quartiles[0.75]) & (x <= quartiles[1]) else False)
-
-        groupe[cat] = temp_dt
-
-        array = []
-        for item in groupe:
-
-            dict = {
-                'categorie': item,
-                'seuil1': groupe[item]['seuil1'].value_counts()[True],
-                'seuil2': groupe[item]['seuil2'].value_counts()[True],
-                'seuil3': groupe[item]['seuil3'].value_counts()[True],
-                'total_count': groupe[item]['seuil3'].value_counts()[True] + groupe[item]['seuil3'].value_counts()[False]
-
-
-
-            }
-            array.append(dict)
-        df_order = pd.DataFrame.from_dict(array)
-
-    df_order.sort_values(['total_count'], inplace=True, ascending=False)
-
-    return df_order
+  return df_order
