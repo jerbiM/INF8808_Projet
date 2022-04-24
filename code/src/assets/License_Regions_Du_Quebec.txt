@@ -1,0 +1,6 @@
+Regions_Du_Quebec.json
+is used under the license CC BY 4.0 from donneesquebec.ca
+Source:
+https://www.donneesquebec.ca/
+https://www.donneesquebec.ca/recherche/dataset/decoupages-administratifs/resource/b368d470-71d6-40a2-8457-e4419de2f9c0
+

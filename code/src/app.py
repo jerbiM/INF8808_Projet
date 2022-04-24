@@ -15,7 +15,7 @@ import barchart
 import json
 
 # Load informations from geojson file to create the map of Quebec
-with open("assets/regions_quebec.geojson", "r") as response:
+with open("assets/Regions_Du_Quebec.json", "r") as response:
     qc = json.load(response)
 
 import pandas as pd
@@ -35,7 +35,7 @@ df_N = preproc.to_df("assets/df_Nina.csv")
 d = {'region': ['Abitibi-Temiscamingue', 'Bas-Saint-Laurent', 'Capitale-Nationale', 'Centre-du-Quebec',
                 'Chaudiere-Appalaches', 'Cote-Nord', 'Estrie', 'Gaspesie-iles-de-la-Madeleine',
                 'Lanaudiere', 'Laurentides', 'Laval', 'Mauricie', 'Montreal', 'Monteregie',
-                'Nord-du-Quebec', 'Outaouais', 'Saguenay - Lac-Saint-Jean'],
+                'Nord-du-Quebec', 'Outaouais', 'Saguenay-Lac-Saint-Jean'],
      'nombreEvenements': [63, 124, 1382, 1103, 99, 16, 578, 68, 480, 491, 177, 1216, 14693, 1715, 1, 282, 182]}
 dfMap = pd.DataFrame(data=d)
 
