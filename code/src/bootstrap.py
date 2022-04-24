@@ -345,15 +345,65 @@ def init_app_layout(fig1,fig2,fig4,fig7,fig8,fig9,fig10):
 			),
 
 			# Cart Vide
-
 			dbc.Card(
 				dbc.CardBody(
 					[
 						html.H5("Visulisation5 - Sankey Diagramme", className="card-title"),
 
-
 					]
 				), style={'background-color': '#77E05A'}
+			),
+			#Sankey Diagram in groupe
+			dbc.CardGroup([
+			dbc.Card(
+				dbc.CardBody(
+					[
+						html.H5("Guide for Visulisation5 - Sankey Diagramme", className="card-title"),
+						html.Div(className='img-quebec', children=[
+							html.Img(src="assets/Quebec_clusters.PNG",
+							         id="quebec-cluster"),
+							html.Div(className="overlay", children=[
+								html.Div(
+									'Les centres culturels sont les suivants:', className="title"),
+								html.Div(children=['Nord du Québec :',
+								                   html.Div(className="text-nord", children=[
+									                   'Abitibi-Témiscamingue',
+									                   html.Div('Capitale-Nationale'),
+									                   html.Div('Côte-Nord'),
+									                   html.Div('Mauricie'),
+									                   html.Div(
+										                   'Nord-du-Québec et de la Baie-James'),
+									                   html.Div(
+										                   'Saguenay-Lac-Saint-Jean')
+								                   ], style={'color': 'black'}),
+								                   ], className="title-nord"),
+								html.Div(children=['Centre du Québec :',
+								                   html.Div(className="text-centre", children=[
+									                   'Centre-du-Québec',
+									                   html.Div('Lanaudière'),
+									                   html.Div('Laurentides'),
+									                   html.Div('Laval'),
+									                   html.Div('Outaouais')
+								                   ], style={'color': 'black'}),
+								                   ], className="title-centre"),
+								html.Div(children=['Sud du Québec :',
+								                   html.Div(className="text-sud", children=[
+									                   'Bas-Saint-Laurent',
+									                   html.Div(
+										                   'Chaudière-Appalaches'),
+									                   html.Div('Estrie'),
+									                   html.Div(
+										                   'Gaspésie et îles-de-la-Madeleine'),
+									                   html.Div('Montérégie')
+								                   ], style={'color': 'black'}),
+								                   ], className="title-sud"),
+								html.Div(children=['Montréal'],
+								         className="title-montreal")
+							])
+						]),
+
+					]
+				),
 			),
 
 			# Sankey Diagramme
@@ -379,6 +429,7 @@ def init_app_layout(fig1,fig2,fig4,fig7,fig8,fig9,fig10):
 					]
 				)
 			),
+			]),
 
 			# Cart Vide
 
@@ -651,6 +702,127 @@ def update_output_div(radiobutton):
     fig8 = barchart.barchart_filtrage(df_barchart_prix)
     return fig8
 
+
+
+@app.callback(
+    [Output('sankey', 'figure')],
+    [Input('sankey', 'clickData')],
+    [State('sankey', 'figure')]
+)
+def display(clicks_fig, figure):  # noqa : E501 pylint: disable=unused-argument too-many-arguments line-too-long
+    '''
+        This function handles clicks on the map. When a
+        marker is clicked, a new figure is displayed.
+        Args:
+            clicks_fig: The clickData associated with the map
+            figure: The figure containing the map
+            title: The current display title
+            mode: The current display title
+            theme: The current display theme
+            style: The current display style for the panel
+        Returns:
+            title: The updated display title
+            mode: The updated display title
+            theme: The updated display theme
+            style: The updated display style for the panel
+    '''
+    ctx = Dash.callback_context
+
+    if not ctx.triggered[0]['value']:
+        return [figure]
+
+    if not ctx.triggered[0]['value']['points'][0]['label']:
+        # link -> modify color with its index
+
+        # find what is the diagramm
+        if "Nord" in ctx.states['sankey.figure']['data'][0]['node']['label']:
+            # group with ?
+            if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
+                # group with categ
+                fig = sankey.sankey_diagram_g_cat(df_sankey).to_dict()
+            else:
+                # group with sous cat
+                cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split(
+                )[-1]
+                fig = sankey.sankey_diagram_g_scat(df_sankey, cond2).to_dict()
+
+        else:
+            # region with ?
+            cond = ctx.states['sankey.figure']['layout']['title']['text'].split()[
+                6]
+            if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
+                # group with categ
+                fig = sankey.sankey_diagram_r_cat(df_sankey, cond).to_dict()
+            else:
+                # group with sous cat
+                cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split(
+                )[-1]
+                fig = sankey.sankey_diagram_reg_scat(
+                    df_sankey, cond, cond2).to_dict()
+
+        click_index = ctx.triggered[0]['value']['points'][0]['index']
+        return [sankey.change_color_link(figure, click_index)]
+
+    # node -> modify
+
+    click_node = ctx.triggered[0]['value']['points'][0]['label']
+
+    node_group = list(df_sankey['groupe'].unique())
+    node_cat = list(df_sankey['categorie'].unique())
+    node_region = list(df_sankey['region'].unique())
+    node_sous_cat = list(df_sankey['sousCategorie'].unique())
+
+    # check in which case we are
+    # if in node_region or node_sous_cat --> change color
+    # else : change diagramm
+
+    if click_node in node_group:
+        if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
+            return [sankey.sankey_diagram_r_cat(df_sankey, click_node)]
+        cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split(
+        )[-1]
+        return [sankey.sankey_diagram_reg_scat(df_sankey, click_node, cond2)]
+
+    elif click_node in node_cat:
+        if "Nord" in ctx.states['sankey.figure']['data'][0]['node']['label']:
+            return [sankey.sankey_diagram_g_scat(df_sankey, click_node)]
+        cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split()[
+            6]
+
+        return [sankey.sankey_diagram_reg_scat(df_sankey, cond2, click_node)]
+
+    elif click_node in node_region or click_node in node_sous_cat:
+
+        # change color
+        if "Nord" in ctx.states['sankey.figure']['data'][0]['node']['label']:
+            # group with ?
+            if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
+                # group with categ
+                fig = sankey.sankey_diagram_g_cat(df_sankey).to_dict()
+            else:
+                # group with sous cat
+                cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split(
+                )[-1]
+                fig = sankey.sankey_diagram_g_scat(df_sankey, cond2).to_dict()
+
+        else:
+            # region with ?
+            cond = ctx.states['sankey.figure']['layout']['title']['text'].split()[
+                6]
+            if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
+                # group with categ
+                fig = sankey.sankey_diagram_r_cat(df_sankey, cond).to_dict()
+            else:
+                # group with sous cat
+                cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split(
+                )[-1]
+                fig = sankey.sankey_diagram_reg_scat(
+                    df_sankey, cond, cond2).to_dict()
+
+        click_index = ctx.triggered[0]['value']['points'][0]['index']
+        return [sankey.change_color_node(figure, click_index)]
+
+    return figure
 
 if __name__ == '__main__':
     app.run_server(debug=True)
