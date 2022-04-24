@@ -63,7 +63,7 @@ html.Div(
                 {"label": "Autre", "value": "ÉvénementielAutre"},
                 {"label": "Toute catégorie", "value": "all"},
             ],
-            value="all",
+            value=["all"],
             id="bullets_category",
         ),
     ]
@@ -141,6 +141,10 @@ html.Div(
 def showfig4(testradio):
     print("Year is ",testradio)
     return heatmap.make_heatmap(df_preprocessed, years=set(testradio))
+    # heatmap.filter_plot_heatmap(df, years: list, 
+    #                             categories: list, 
+    #                             pricing: str, 
+    #                             modality: str)
 
 
 
