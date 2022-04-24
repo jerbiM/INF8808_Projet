@@ -1,22 +1,25 @@
 import plotly.express as px
-
+import hover_template as hover
 def barchart_gratuit(df):
 
 
 	fig = px.bar(df, x='groupe', y=['événements_gratuits','événement_payant'],
-
 	             color_discrete_map={
 		             'événements_gratuits': '#DDB5B5',
 		             'événement_payant': '#840921'
 	             }
 	             )
+	newnames = {'événements_gratuits': 'Les événements gratuits', 'événement_payant': 'Les événenments payants'}
 
+	fig.update_traces( hovertemplate=hover.barchart_gratuit())
 	fig.update_layout(
 
 		xaxis_title="Régions du Québec",
-		yaxis_title="Nombre d'évènements",
+		yaxis_title="Nombre d'événements",
+		legend={'title_text': "Type d'événements"}
 
 	)
+	fig.for_each_trace(lambda t: t.update(name=newnames[t.name]))
 	return fig
 
 
@@ -24,93 +27,37 @@ def barchart_gratuit(df):
 
 def barchart_filtrage(df):
 
+	#interval of prrice
+	seuil1='{}  ≥ prix < {}'.format(df['seuil1_value'][0],df['seuil2_value'][0])
+	seuil2='{}  ≥ prix < {}'.format(df['seuil2_value'][0],df['seuil3_value'][0])
+	seuil3='{}  ≥ prix ≤ {}'.format(df['seuil3_value'][0],df['seuil4_value'][0])
 
+	newnames = {'seuil1':seuil1, 'seuil2':seuil2, 'seuil3': seuil3}
 
+	list_prix=[df['seuil1_value'],df['seuil2_value'],df['seuil3_value'],df['seuil4_value']]
 	fig = px.bar(df, x='categorie', y=['seuil1','seuil2','seuil3'],
 	color_discrete_map = {
 		'seuil1': '#D7B1D3',
 		'seuil2': '#B71184',
 		'seuil3': '#6F0A55',
 
-	}
+	},
+	    hover_data=list_prix
+
 	)
 
 	fig.update_layout(
-
 		xaxis_title="Catégories",
-		yaxis_title="Nombre d'évènements",
+		yaxis_title="Nombre d'événements",
+		legend={'title_text': "Les intervalles du prix"}
 
 	)
-	#fig.show()
+
+	fig.update_traces(hovertemplate=hover.barchart_payant())
+
+	#show intervalle
+	fig.for_each_trace(lambda t: t.update(name=newnames[t.name]))
+
 	return fig
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	#total = df.value_counts()
-	#df=df.groupby(['groupe'])['est_gratuit'].count()
-	#print(groupe_by_temp)
-	#print(groupe_by_est_gratuit)
-
-	#temp_df=clus_est_gratuit_data.loc[['Centre'][0]]
-	# print("clus_est_region",clus_est_region)
-	# print("clus_est_gratuit",clus_est_gratuit)
-
-	# print("data is \n",clus_est_gratuit_data)
-	# print("\n #####type of data",type(clus_est_gratuit_data))
-
-
-	# values = list()
-	#print(x_df)
-	# temp_df=clus_est_gratuit_data.to_frame()
-	# print("#####toframe is",temp_df)
-	# print("\ntype of toframe is",type(temp_df))
-	# print("colomn of toframe is",temp_df.columns)
-
-	# for row in clus_est_gratuit:
-	# 	values.append(row)
-
-
-	#print(values)
-	#test=[values[i]  for i in range(len(values))]
-	#print("this is test",test)
-	# true_false_centre=values[0]+values[1]
-	# true_false_montreal=values[2]+values[3]
-	# true_false_nord=values[4]+values[5]
-	# true_false_sud=values[5]+values[6]
-	#
-	# print(x_df[0],true_false_centre)
-	# print(x_df[1],true_false_montreal)
-	# print(x_df[2],true_false_nord)
-	# print(x_df[3],true_false_sud)
-	#print(values)
-	#temp=clus_est_gratuit_data[clus_est_gratuit_data['groupe']=='Centre']
-	#print("temp",temp)
-
-	# temp=clus_est_gratuit_data.loc[('Centre', True)]
-	#fig = px.bar(clus_est_gratuit_data, x="groupe", y="est_gratuit",
-	# color="est_gratuit", title="Long-Form Input"
-	#)
-	#fig.show()
-
-	#print("This is clus_est_gratuit_data\n",clus_est_gratuit_data.loc['groupe'])
-
-
-	# fig = px.bar(df, x="groupe", y="count",
-	#             # color="medal",
-	#              title="THis is a test")
