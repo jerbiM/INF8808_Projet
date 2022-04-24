@@ -14,8 +14,12 @@ import os
 # print("Folders in path : ", os.listdir('.'))
 df_file_preprocessed = "code/src/assets/df_ghali_v3.csv"
 df_preprocessed = preproc.to_df(df_file_preprocessed)
-
-fig4 = heatmap.make_heatmap(df_preprocessed, years=set([2021]))
+low_density_years = [2012, 2015, 2024 , 2030]
+df = df_preprocessed[~df_preprocessed.year.isin(set(low_density_years))]
+fig4 = heatmap.filter_plot_heatmap(df, [2021], 
+                                ["all"], 
+                                "all", 
+                                "all")
 
 app = Dash(__name__)
 
@@ -134,17 +138,24 @@ html.Div(
 @app.callback(
 
     Output("viz_4", 'figure'),
-    Input('bullets_year', 'value')
+    Input('bullets_year', 'value'),
+    Input('bullets_category', 'value'),
+    Input('bullets_price', 'value'),
+    Input('bullets_modality', 'value'),
+    
    # [Input(component_id='radio-selected-style', component_property='value')],
 )
 
-def showfig4(testradio):
-    print("Year is ",testradio)
-    return heatmap.make_heatmap(df_preprocessed, years=set(testradio))
-    # heatmap.filter_plot_heatmap(df, years: list, 
-    #                             categories: list, 
-    #                             pricing: str, 
-    #                             modality: str)
+def showfig4(bullets_year, bullets_category, bullets_price, bullets_modality):
+    print("Year is ",bullets_year)
+    print("Category is ",bullets_category)
+    print("Price is ",bullets_price)
+    print("Modality is ",bullets_modality)
+    #return heatmap.make_heatmap(df_preprocessed, years=set(testradio))
+    return heatmap.filter_plot_heatmap(df, bullets_year, 
+                                bullets_category, 
+                                bullets_price, 
+                                bullets_modality)
 
 
 
