@@ -7,6 +7,7 @@ import plotly.graph_objects as go
 import preprocess as preproc
 import sankey
 import stackedBarChart
+import lineChart
 import mapViz
 import heatmap
 # import pymsgbox
@@ -14,7 +15,7 @@ import barchart
 import json
 
 # Load informations from geojson file to create the map of Quebec
-with open("assets/regions_quebec.geojson", "r") as response:
+with open("assets/Regions_Du_Quebec.json", "r") as response:
     qc = json.load(response)
 
 import pandas as pd
@@ -29,12 +30,12 @@ df = preproc.to_df(df_file)
 
 df_N = preproc.to_df("assets/df_Nina.csv")
 
-dfEventsCount = preproc.group_by_column_count(df, 'region')
+#dfEventsCount = preproc.group_by_column_count(df, 'region')
 # Create df from result obtained from dfEventsCount
 d = {'region': ['Abitibi-Temiscamingue', 'Bas-Saint-Laurent', 'Capitale-Nationale', 'Centre-du-Quebec',
                 'Chaudiere-Appalaches', 'Cote-Nord', 'Estrie', 'Gaspesie-iles-de-la-Madeleine',
-                'Lanaudiere', 'Laurentides', 'Laval', 'Mauricie', 'Montreal', 'Monteregie', 
-                'Nord-du-Quebec', 'Outaouais', 'Saguenay - Lac-Saint-Jean'],
+                'Lanaudiere', 'Laurentides', 'Laval', 'Mauricie', 'Montreal', 'Monteregie',
+                'Nord-du-Quebec', 'Outaouais', 'Saguenay-Lac-Saint-Jean'],
      'nombreEvenements': [63, 124, 1382, 1103, 99, 16, 578, 68, 480, 491, 177, 1216, 14693, 1715, 1, 282, 182]}
 dfMap = pd.DataFrame(data=d)
 
@@ -56,8 +57,19 @@ clus_est_gratuit_data = preproc.group_by_column2_count(
     df_sankey, 'groupe', 'est_gratuit')
 df_barchart = preproc.data_prepartion_barchart_gratuit(
     df_sankey, clus_est_gratuit_data)
-#df_barchart_prix=preproc.data_prepartion_barchart_par_prix(new_df,"Montréal")
+# df_barchart_prix=preproc.data_prepartion_barchart_par_prix(new_df,"Montréal")
 
+# DataFrame for LineChart
+df['count'] = 1
+
+dfa = preproc.group_by_price(df, [0, 80])
+dfa = preproc.group_by_selected_category(dfa, 'Musique')
+
+df_final = dfa[['year', 'categorie', 'region', 'count']].groupby(
+    ['year', 'categorie', 'region'], as_index=False).sum()
+print(df_final)
+
+fig10 = lineChart.lineChart(df_final)
 fig9 = mapViz.mapQuebec(dfMap, qc)
 fig1 = stackedBarChart.stackedBarChart(df_2021)
 fig2 = sankey.sankey_diagram_g_cat(df_sankey)
@@ -67,10 +79,12 @@ fig4 = heatmap.make_heatmap(df_preprocessed, years=set([2019, 2020]))
 fig5 = sankey.sankey_diagram_r_cat(df_sankey, 'Sud')
 fig6 = sankey.sankey_diagram_g_scat(df_sankey, 'ArtsVisuels')
 fig7 = barchart.barchart_gratuit(df_barchart)
-#fig8=barchart.barchart_filtrage(df_barchart_prix)
+# fig8=barchart.barchart_filtrage(df_barchart_prix)
 
 # fig4.write_html("index4.html")
-def init_app_layout(fig9, fig1, fig2, fig3, fig4, fig5, fig6):
+
+
+def init_app_layout(fig10, fig9, fig1, fig2, fig3, fig4, fig5, fig6):
 
     return html.Div(className='content', children=[
         html.Header(children=[
@@ -91,6 +105,44 @@ def init_app_layout(fig9, fig1, fig2, fig3, fig4, fig5, fig6):
                                   ),
                                   className='graph',
                                   id='viz_9')
+                    ]),
+                    html.Div([
+                        html.Div([
+                            dcc.Dropdown(
+                                options=[
+                                    {'label': 'Musique', 'value': 'Musique'},
+                                    {'label': 'ArtsVisuels',
+                                        'value': 'ArtsVisuels'},
+                                    {'label': 'ÉvénementielAutre',
+                                        'value': 'ÉvénementielAutre'},
+                                    {'label': 'Humour', 'value': 'Humour'},
+                                    {'label': 'Théâtre', 'value': 'Théâtre'},
+                                    {'label': 'Danse', 'value': 'Danse'},
+                                    {'label': 'Cirque', 'value': 'Cirque'},
+                                ],
+                                value='Musique',
+                                id='dropdownCategory'
+                            ),
+                        ], style={'width': '48%', 'display': 'inline-block'}),
+                        html.Label(['Choisir le prix'], style={
+                            'font-weight': 'bold'}),
+                        dcc.RangeSlider(
+                            id='PriceSliderLineChart',
+                            min=0,
+                            max=1000,
+                            value=[0, 1000],
+                            allowCross=False
+                        ),
+                        dcc.Graph(figure=fig10,
+                                  config=dict(
+                                      scrollZoom=False,
+                                      showTips=False,
+                                      showAxisDragHandles=False,
+                                      doubleClick=False,
+                                      displayModeBar=False
+                                  ),
+                                  className='graph',
+                                  id='viz_10')
                     ]),
                     html.Div([
                         dcc.Dropdown(
@@ -134,7 +186,8 @@ def init_app_layout(fig9, fig1, fig2, fig3, fig4, fig5, fig6):
                                 {'label': 'Laval', 'value': 'Laval (13)'},
                                 {'label': 'Mauricie', 'value': 'Mauricie'},
                                 {'label': 'Montérégie', 'value': 'Montérégie'},
-                                {'label': 'Montréal', 'value': 'Montréal (06)'},
+                                {'label': 'Montréal',
+                                    'value': 'Montréal (06)'},
                                 {'label': 'Nord-du-Québec',
                                     'value': 'Nord-du-Québec'},
                                 {'label': 'Outaouais', 'value': 'Outaouais'},
@@ -166,7 +219,7 @@ def init_app_layout(fig9, fig1, fig2, fig3, fig4, fig5, fig6):
                     min=0,
                     max=12,
                     step=1,
-                    value='12'
+                    value=12
                 ),
                 html.Label(['Choisir le range du prix en CAD'],
                            style={'font-weight': 'bold'}),
@@ -295,26 +348,27 @@ def init_app_layout(fig9, fig1, fig2, fig3, fig4, fig5, fig6):
                     id='viz_7'
                 )
             ]),
-            
-              html.Div(className='viz-container', children=[
-                html.H2('Barchart pour la distribution du prix selon les catégories.'),
-                #dcc.Graph(
-                    #figure=fig8,
-                    #config=dict(
-                        #scrollZoom=False,
-                        #showTips=False,
-                        #showAxisDragHandles=False,
-                        #displayModeBar=False
-                    #),
-                    #className='graph',
-                    #id='viz_8'
-                #)
+
+            html.Div(className='viz-container', children=[
+                html.H2(
+                    'Barchart pour la distribution du prix selon les catégories.'),
+                # dcc.Graph(
+                # figure=fig8,
+                # config=dict(
+                # scrollZoom=False,
+                # showTips=False,
+                # showAxisDragHandles=False,
+                # displayModeBar=False
+                # ),
+                # className='graph',
+                # id='viz_8'
+                # )
             ])
         ])
     ])
 
 
-app.layout = init_app_layout(fig9, fig1, fig2, fig3, fig4, fig5, fig6)
+app.layout = init_app_layout(fig10, fig9, fig1, fig2, fig3, fig4, fig5, fig6)
 
 
 with open('indexViz_alpha.html', 'a') as f:
@@ -354,13 +408,34 @@ def figWithNewDf(selected_year, selected_month, selected_region, selected_price)
             df, int(selected_year), int(selected_month), selected_region, selected_price))
     # if new_df_selected.empty:
         # pymsgbox.alert('Pas d''événements pour la période choisie.', 'Avertissement')
-        
+
+
+@ app.callback(
+    Output('viz_10', 'figure'),
+    [Input(component_id='dropdownCategory', component_property='value')],
+    [Input(component_id='PriceSliderLineChart', component_property='value')]
+)
+def LineChartWithNewDf(selected_category, selected_price_lineChart):
+    print(selected_category)
+    print(selected_price_lineChart)
+    print('oooooooooooooooooooooooooo')
+
+    df['count'] = 1
+    dfa = preproc.group_by_price(df, selected_price_lineChart)
+    dfa = preproc.group_by_selected_category(dfa, selected_category)
+
+    df_final = dfa[['year', 'categorie', 'region', 'count']].groupby(
+        ['year', 'categorie', 'region'], as_index=False).sum()
+    
+    return lineChart.lineChart(df_final)
+
+
 @app.callback(
     [Output('sankey', 'figure')],
     [Input('sankey', 'clickData')],
     [State('sankey', 'figure')]
 )
-def display(clicks_fig, figure): # noqa : E501 pylint: disable=unused-argument too-many-arguments line-too-long
+def display(clicks_fig, figure):  # noqa : E501 pylint: disable=unused-argument too-many-arguments line-too-long
     '''
         This function handles clicks on the map. When a
         marker is clicked, a new figure is displayed.
@@ -378,92 +453,99 @@ def display(clicks_fig, figure): # noqa : E501 pylint: disable=unused-argument t
             style: The updated display style for the panel
     '''
     ctx = dash.callback_context
-    
+
     if not ctx.triggered[0]['value']:
         return [figure]
 
     if not ctx.triggered[0]['value']['points'][0]['label']:
-        #link -> modify color with its index
+        # link -> modify color with its index
 
-        #find what is the diagramm
+        # find what is the diagramm
         if "Nord" in ctx.states['sankey.figure']['data'][0]['node']['label']:
-            #group with ?
+            # group with ?
             if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
-                #group with categ
+                # group with categ
                 fig = sankey.sankey_diagram_g_cat(df_sankey).to_dict()
             else:
-                #group with sous cat
-                cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split()[-1]
+                # group with sous cat
+                cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split(
+                )[-1]
                 fig = sankey.sankey_diagram_g_scat(df_sankey, cond2).to_dict()
-        
-        else :
-            #region with ?
-            cond = ctx.states['sankey.figure']['layout']['title']['text'].split()[6]
+
+        else:
+            # region with ?
+            cond = ctx.states['sankey.figure']['layout']['title']['text'].split()[
+                6]
             if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
-                #group with categ
+                # group with categ
                 fig = sankey.sankey_diagram_r_cat(df_sankey, cond).to_dict()
             else:
-                #group with sous cat
-                cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split()[-1]
-                fig = sankey.sankey_diagram_reg_scat(df_sankey, cond, cond2).to_dict()
+                # group with sous cat
+                cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split(
+                )[-1]
+                fig = sankey.sankey_diagram_reg_scat(
+                    df_sankey, cond, cond2).to_dict()
 
-        
         click_index = ctx.triggered[0]['value']['points'][0]['index']
         return [sankey.change_color_link(figure, click_index)]
-    
-    #node -> modify
-    
+
+    # node -> modify
+
     click_node = ctx.triggered[0]['value']['points'][0]['label']
 
     node_group = list(df_sankey['groupe'].unique())
     node_cat = list(df_sankey['categorie'].unique())
     node_region = list(df_sankey['region'].unique())
     node_sous_cat = list(df_sankey['sousCategorie'].unique())
-    
-   
-    #check in which case we are
+
+    # check in which case we are
     # if in node_region or node_sous_cat --> change color
-    #else : change diagramm
+    # else : change diagramm
 
     if click_node in node_group:
         if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
             return [sankey.sankey_diagram_r_cat(df_sankey, click_node)]
-        cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split()[-1]
+        cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split(
+        )[-1]
         return [sankey.sankey_diagram_reg_scat(df_sankey, click_node, cond2)]
-    
+
     elif click_node in node_cat:
         if "Nord" in ctx.states['sankey.figure']['data'][0]['node']['label']:
             return [sankey.sankey_diagram_g_scat(df_sankey, click_node)]
-        cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split()[6]
+        cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split()[
+            6]
 
         return [sankey.sankey_diagram_reg_scat(df_sankey, cond2, click_node)]
-    
+
     elif click_node in node_region or click_node in node_sous_cat:
 
-        #change color
+        # change color
         if "Nord" in ctx.states['sankey.figure']['data'][0]['node']['label']:
-            #group with ?
+            # group with ?
             if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
-                #group with categ
+                # group with categ
                 fig = sankey.sankey_diagram_g_cat(df_sankey).to_dict()
             else:
-                #group with sous cat
-                cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split()[-1]
+                # group with sous cat
+                cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split(
+                )[-1]
                 fig = sankey.sankey_diagram_g_scat(df_sankey, cond2).to_dict()
-        
-        else :
-            #region with ?
-            cond = ctx.states['sankey.figure']['layout']['title']['text'].split()[6]
+
+        else:
+            # region with ?
+            cond = ctx.states['sankey.figure']['layout']['title']['text'].split()[
+                6]
             if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
-                #group with categ
+                # group with categ
                 fig = sankey.sankey_diagram_r_cat(df_sankey, cond).to_dict()
             else:
-                #group with sous cat
-                cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split()[-1]
-                fig = sankey.sankey_diagram_reg_scat(df_sankey, cond, cond2).to_dict()
+                # group with sous cat
+                cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split(
+                )[-1]
+                fig = sankey.sankey_diagram_reg_scat(
+                    df_sankey, cond, cond2).to_dict()
 
         click_index = ctx.triggered[0]['value']['points'][0]['index']
         return [sankey.change_color_node(figure, click_index)]
 
     return figure
-
