@@ -570,126 +570,6 @@ def LineChartWithNewDf(selected_category, selected_price_lineChart):
 	return lineChart.lineChart(df_final)
 
 
-@app.callback(
-	[Output('sankey', 'figure')],
-	[Input('sankey', 'clickData')],
-	[State('sankey', 'figure')]
-)
-def display(clicks_fig, figure):  # noqa : E501 pylint: disable=unused-argument too-many-arguments line-too-long
-	'''
-		This function handles clicks on the map. When a
-		marker is clicked, a new figure is displayed.
-		Args:
-			clicks_fig: The clickData associated with the map
-			figure: The figure containing the map
-			title: The current display title
-			mode: The current display title
-			theme: The current display theme
-			style: The current display style for the panel
-		Returns:
-			title: The updated display title
-			mode: The updated display title
-			theme: The updated display theme
-			style: The updated display style for the panel
-	'''
-	ctx = Dash.callback_context
-
-	if not ctx.triggered[0]['value']:
-		return [figure]
-
-	if not ctx.triggered[0]['value']['points'][0]['label']:
-		# link -> modify color with its index
-
-		# find what is the diagramm
-		if "Nord" in ctx.states['sankey.figure']['data'][0]['node']['label']:
-			# group with ?
-			if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
-				# group with categ
-				fig = sankey.sankey_diagram_g_cat(df_sankey).to_dict()
-			else:
-				# group with sous cat
-				cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split(
-				)[-1]
-				fig = sankey.sankey_diagram_g_scat(df_sankey, cond2).to_dict()
-
-		else:
-			# region with ?
-			cond = ctx.states['sankey.figure']['layout']['title']['text'].split()[
-				6]
-			if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
-				# group with categ
-				fig = sankey.sankey_diagram_r_cat(df_sankey, cond).to_dict()
-			else:
-				# group with sous cat
-				cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split(
-				)[-1]
-				fig = sankey.sankey_diagram_reg_scat(
-					df_sankey, cond, cond2).to_dict()
-
-		click_index = ctx.triggered[0]['value']['points'][0]['index']
-		return [sankey.change_color_link(figure, click_index)]
-
-	# node -> modify
-
-	click_node = ctx.triggered[0]['value']['points'][0]['label']
-
-	node_group = list(df_sankey['groupe'].unique())
-	node_cat = list(df_sankey['categorie'].unique())
-	node_region = list(df_sankey['region'].unique())
-	node_sous_cat = list(df_sankey['sousCategorie'].unique())
-
-	# check in which case we are
-	# if in node_region or node_sous_cat --> change color
-	# else : change diagramm
-
-	if click_node in node_group:
-		if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
-			return [sankey.sankey_diagram_r_cat(df_sankey, click_node)]
-		cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split(
-		)[-1]
-		return [sankey.sankey_diagram_reg_scat(df_sankey, click_node, cond2)]
-
-	elif click_node in node_cat:
-		if "Nord" in ctx.states['sankey.figure']['data'][0]['node']['label']:
-			return [sankey.sankey_diagram_g_scat(df_sankey, click_node)]
-		cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split()[
-			6]
-
-		return [sankey.sankey_diagram_reg_scat(df_sankey, cond2, click_node)]
-
-	elif click_node in node_region or click_node in node_sous_cat:
-
-		# change color
-		if "Nord" in ctx.states['sankey.figure']['data'][0]['node']['label']:
-			# group with ?
-			if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
-				# group with categ
-				fig = sankey.sankey_diagram_g_cat(df_sankey).to_dict()
-			else:
-				# group with sous cat
-				cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split(
-				)[-1]
-				fig = sankey.sankey_diagram_g_scat(df_sankey, cond2).to_dict()
-
-		else:
-			# region with ?
-			cond = ctx.states['sankey.figure']['layout']['title']['text'].split()[
-				6]
-			if "ArtsVisuels" in ctx.states['sankey.figure']['data'][0]['node']['label']:
-				# group with categ
-				fig = sankey.sankey_diagram_r_cat(df_sankey, cond).to_dict()
-			else:
-				# group with sous cat
-				cond2 = ctx.states['sankey.figure']['layout']['title']['text'].split(
-				)[-1]
-				fig = sankey.sankey_diagram_reg_scat(
-					df_sankey, cond, cond2).to_dict()
-
-		click_index = ctx.triggered[0]['value']['points'][0]['index']
-		return [sankey.change_color_node(figure, click_index)]
-
-	return figure
-
 
 
 @app.callback(
@@ -710,22 +590,8 @@ def update_output_div(radiobutton):
     [State('sankey', 'figure')]
 )
 def display(clicks_fig, figure):  # noqa : E501 pylint: disable=unused-argument too-many-arguments line-too-long
-    '''
-        This function handles clicks on the map. When a
-        marker is clicked, a new figure is displayed.
-        Args:
-            clicks_fig: The clickData associated with the map
-            figure: The figure containing the map
-            title: The current display title
-            mode: The current display title
-            theme: The current display theme
-            style: The current display style for the panel
-        Returns:
-            title: The updated display title
-            mode: The updated display title
-            theme: The updated display theme
-            style: The updated display style for the panel
-    '''
+
+
     ctx = Dash.callback_context
 
     if not ctx.triggered[0]['value']:
