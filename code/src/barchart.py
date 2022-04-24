@@ -16,7 +16,9 @@ def barchart_gratuit(df):
 
 		xaxis_title="Régions du Québec",
 		yaxis_title="Nombre d'événements",
-		legend={'title_text': "Type d'événements"}
+		legend={'title_text': "Type d'événements"},
+		paper_bgcolor='rgb(233,233,233)',  # set the background colour
+		plot_bgcolor='rgb(233,233,233)'
 
 	)
 	fig.for_each_trace(lambda t: t.update(name=newnames[t.name]))
@@ -49,7 +51,9 @@ def barchart_filtrage(df):
 	fig.update_layout(
 		xaxis_title="Catégories",
 		yaxis_title="Nombre d'événements",
-		legend={'title_text': "Les intervalles du prix"}
+		legend={'title_text': "Les intervalles du prix"},
+		paper_bgcolor='rgb(233,233,233)',  # set the background colour
+		plot_bgcolor='rgb(233,233,233)'
 
 	)
 
