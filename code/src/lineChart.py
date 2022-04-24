@@ -9,7 +9,8 @@ def lineChart(df):
                       "count": "Nombre d'événements",
                       "region": "Régions"
                   },
-                  title="Régions les plus chères selon les catégories").update_layout(
+                  #title="Régions les plus chères selon les catégories"
+                  ).update_layout(
         xaxis={"rangeslider": {"visible": True},
                "range": [2012, 2030],
                },

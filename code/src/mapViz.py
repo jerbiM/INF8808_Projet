@@ -11,6 +11,7 @@ def mapQuebec(dfMap, geojsonQc):
                                zoom=3,
                                center={"lat": 52.541377, "lon": -70.373741},
                                opacity=0.5,
-                               title="Distribution des événements au Québec géographiquement")
+                               #title="Distribution des événements au Québec géographiquement"
+                               )
 
     return fig

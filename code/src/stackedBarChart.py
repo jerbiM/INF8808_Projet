@@ -15,7 +15,8 @@ def stackedBarChart(df):
                      "Événements": "Nombre d'événements",
                      "categorie": "Catégorie"
                  },
-                 title="Chronologie temporelle des événements et attentes financières").update_layout(
+                 #title="Chronologie temporelle des événements et attentes financières"
+                 ).update_layout(
         xaxis={"rangeslider": {"visible": True},
                "autorange": True
                },

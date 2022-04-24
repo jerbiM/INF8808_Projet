@@ -2,23 +2,21 @@ import dash
 from dash import html
 from dash import dcc
 from dash.dependencies import Input, Output, State
-import plotly.graph_objects as go
-
 import preprocess as preproc
 import sankey
 import stackedBarChart
 import lineChart
 import mapViz
 import heatmap
-# import pymsgbox
 import barchart
 import json
+import pandas as pd
 
 # Load informations from geojson file to create the map of Quebec
 with open("assets/Regions_Du_Quebec.json", "r") as response:
     qc = json.load(response)
 
-import pandas as pd
+
 
 import plotly.express as px
 
@@ -370,17 +368,6 @@ def init_app_layout(fig10, fig9, fig1, fig2, fig3, fig4, fig5, fig6):
 
 
 app.layout = init_app_layout(fig10, fig9, fig1, fig2, fig3, fig4, fig5, fig6)
-
-
-# with open('indexViz_alpha.html', 'a') as f:
-#     f.write(fig1.to_html(full_html=False, include_plotlyjs='cdn'))
-#     f.write(fig2.to_html(full_html=False, include_plotlyjs='cdn'))
-#     f.write(fig3.to_html(full_html=False, include_plotlyjs='cdn'))
-#     f.write(fig4.to_html(full_html=False, include_plotlyjs='cdn'))
-#     f.write(fig5.to_html(full_html=False, include_plotlyjs='cdn'))
-#     f.write(fig6.to_html(full_html=False, include_plotlyjs='cdn'))
-#     f.write(fig7.to_html(full_html=False, include_plotlyjs='cdn'))
-#
 
 @ app.callback(
     Output('viz_1', 'figure'),
