@@ -32,8 +32,8 @@ def sankey_hover_template_link():
 
 def barchart_gratuit():
 
-    hovertemp = '<b style="color: white"> Région</b><span style="color: white"> : %{x} </span><br>'
-    hovertemp+="<b style='color: white'>Nombre d'événenemnts</b> <span style='color: white'> : %{y} </span><extra></extra>"
+    hovertemp = '<b style="color: #2D9A0F"> Région</b><span style="color: #2D9A0F"> : %{x} </span><br>'
+    hovertemp+="<b style='color: #2D9A0F'>Nombre d'événenemnts</b> <span style='color: #2D9A0F'> : %{y} </span><extra></extra>"
     return hovertemp
 
 
