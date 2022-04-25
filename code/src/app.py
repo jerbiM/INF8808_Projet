@@ -92,11 +92,56 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 		 #dbc.CardGroup(
 		[
 
+			html.Header(children=[
+				html.Div(className="v-slider-bloc", children=[
+					html.Div(id="banner_header", children=[
+						html.Div(className="logo_S", children=[
+							html.P(
+								html.Img(src="./assets/Synapse_C.png", alt="Logo SynapseC", width="60%", height="60%"))
+						]),
+						html.Div(className="titre", children=[
+							html.P("Que faire au Québec ?")
+						]),
+						html.Div(className="logo_P", children=[
+							html.P(html.Img(src="./assets/Poly_M.png", alt="Logo Poly", width="60%", height="60%"))
+						])
+					]),
+					html.Div(id="banner_1", children=[
+						html.Div(className="intro", children=[
+							html.P("Ce projet a été fait en cours de INF8808.")
+						]),
+						html.Nav(className="menu", children=[
+							html.Ul(children=[
+								html.Li(children=[
+									html.A(href="#Visu_1", children=["Carte"])
+								]),
+								html.Li(children=[
+									html.A(href="#Visu_2", children=["Graphique linéaire"])
+								]),
+								html.Li(children=[
+									html.A(href="#Visu_3", children=["Diagramme en barres empilées"])
+								]),
+								html.Li(children=[
+									html.A(href="#Visu_4", children=["Carte de chaleur"])
+								]),
+								html.Li(children=[
+									html.A(href="#Visu_5", children=["Diagramme de Sankey"])
+								]),
+								html.Li(children=[
+									html.A(href="#Visu_6", children=["Diagramme en barres"])
+								])
+							])
+						])
+					])
+				])
+			]),
+
 	#Cart Vide
 
 			dbc.Card(
 				dbc.CardBody(
 					[
+
 						html.H5("Visualisation1 - Stacked Bar", className="card-title"),
 
 					]
