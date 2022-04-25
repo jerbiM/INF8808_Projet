@@ -17,17 +17,6 @@ body {
   scroll-snap-type: y mandatory; /* forcément scroller selon y */
 }
 
-.v-slider-bloc {
-  color: black;
-  font-size: 30px;
-/*  display: flex;
-  justify-content: center;*/
-  align-items: center;
-  border-bottom: 5px solid black;
-  height: 100%;
-  scroll-snap-align: center; /* repositionne au centre du bloc*/
-}
-
 /* Menu : (dans le .v-slider-bloc:nth-child(1)) */
 
 #banner_header {
@@ -43,7 +32,7 @@ body {
 }
 
 .titre {
-  font-size: 125%;
+  font-size: 200%;
   font-style: bold;
 }
 
@@ -56,6 +45,7 @@ body {
 .intro {
   align-self: center;
   margin-left: 10px;
+  font-size: 125%;
 }
 
 .menu {
@@ -76,6 +66,7 @@ body {
 
 .menu ul li a {
   color: black;
+  font-size: 125%;
   /*text-decoration: none; pas de soulignage sur le cliquable*/
 }
 
@@ -84,12 +75,6 @@ body {
   background-color: #D3B79A;
 }
 
-/* Enfants du Slider : pour mettre un background changeant sur chacun*/
-
-/*.v-slider-bloc:nth-child(1){background-image: url('../01_Images/fond_home_leger_1.png');}
-.v-slider-bloc:nth-child(2){background-image: url('../01_Images/fond_home_leger_2.png');}
-.v-slider-bloc:nth-child(3){background-image: url('../01_Images/fond_home_leger_3.png');}
-.v-slider-bloc:nth-child(4){background-image: url('../01_Images/fond_home_leger_4.png');}*/
 
 .viz-container{
     height: 100%;
@@ -136,7 +121,7 @@ body {
     font-size: 20px;
     position: absolute;
     overflow: hidden;
-    top:10%;
+    top:5%;
     left: 50%;
     transform: translate(-50%, -50%);
     -ms-transform: translate(-50%, -50%);
@@ -149,8 +134,8 @@ body {
     font-size: 20px;
     position: absolute;
     overflow: hidden;
-    top:30%;
-    left:75%;
+    top:32%;
+    left:70%;
     text-align: right;
     transform: translate(-50%, -50%);
     -ms-transform: translate(-50%, -50%);
@@ -163,8 +148,8 @@ body {
     font-size: 20px;
     position: absolute;
     overflow: hidden;
-    top:70%;
-    left:77%;
+    top:79%;
+    left:73%;
     text-align: right;
     transform: translate(-50%, -50%);
     -ms-transform: translate(-50%, -50%);
@@ -177,8 +162,8 @@ body {
     font-size: 20px;
     position: absolute;
     overflow: hidden;
-    top:30%;
-    left:15%;
+    top:32%;
+    left:18%;
     text-align: left;
     transform: translate(-50%, -50%);
     -ms-transform: translate(-50%, -50%);
@@ -191,7 +176,7 @@ body {
     font-size: 20px;
     position: absolute;
     overflow: hidden;
-    top:70%;
+    top:72%;
     left:10%;
     text-align: left;
     transform: translate(-50%, -50%);

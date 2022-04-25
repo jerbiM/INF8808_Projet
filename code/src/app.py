@@ -142,10 +142,10 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 				dbc.CardBody(
 					[
 
-						html.Div(id="Visu_1", children=[html.H5("Visualisation1 - Stacked Bar", className="card-title")]),
+						html.Div(id="Visu_1", children=[html.H5("Diagramme en barres empilées", className="card-title")]),
 
 					]
-				),style={'backgroundColor':'rgb(96,28,236)', 'font_color':'white'}
+				),style={'backgroundColor':'rgb(96,28,236)', 'color':'white'}
 			),
 
 			# StackBarchart
@@ -153,6 +153,7 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 				dbc.CardBody(
 					[
 						html.H5("Chronologie temporelle des événements et attentes financières", className="card-title"),
+						html.P("Cette visualisation montre les événements et leurs détails selon des filtres qui sont l’année, la région, le mois et le prix."),
 
 						html.Div([
 
@@ -255,16 +256,17 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 			dbc.Card(
 				dbc.CardBody(
 					[
-						html.H5("Visualisation2 - LineChart", className="card-title", id ="Visu_2"),
+						html.H5("Graphique linéaire", className="card-title", id ="Visu_2"),
 
 					]
-				),style={'backgroundColor':'rgb(96,28,236)', 'font_color':'white'}
+				),style={'backgroundColor':'rgb(96,28,236)', 'color':'white'}
 			),
 
 			#linechart
 			dbc.Card(
 				dbc.CardBody([
 					html.H5("Régions les plus chères selon les catégories", className="card-title"),
+					html.P("Cette visualisation montre les régions les plus chères selon les catégories."),
 					html.Div([
 						html.Div([
 							dcc.Dropdown(
@@ -312,15 +314,16 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 			dbc.Card(
 				dbc.CardBody(
 					[
-						html.H5("Visualisation3 - Map", className="card-title", id="Visu_3"),
+						html.H5("Carte", className="card-title", id="Visu_3"),
 
 					]
-				),style={'backgroundColor':'rgb(96,28,236)', 'font_color':'white'}
+				),style={'backgroundColor':'rgb(96,28,236)', 'color':'white'}
 			),
 	#map Viz
 			dbc.Card(
 				dbc.CardBody([
 					html.H5("Distribution des événements au Québec géographiquement", className="card-title"),
+					html.P("Cette visualisation montre une distribution géographique des événements au Québec de l’année 2012 à l’année 2030 pour toutes les catégories et tous les prix."),
 					html.Div([
 						dcc.Graph(figure=fig9,
 						          config=dict(
@@ -346,7 +349,7 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 			dbc.Card(
 				dbc.CardBody(
 					[
-						html.Div(id="Visu_4", children=[html.H5("Visulisation5 - Sankey Diagramme", className="card-title")]),
+						html.Div(id="Visu_4", children=[html.H5("Diagramme de Sankey", className="card-title")]),
 
 					]
 				), style={'backgroundColor':'rgb(96,28,236)', 'color':'white'}
@@ -356,7 +359,8 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 			dbc.Card(
 				dbc.CardBody(
 					[
-						html.H5("Guide for Visulisation5 - Sankey Diagramme", className="card-title"),
+						html.H5("Regroupement des régions", className="card-title"),
+						html.P("Nous avons décidé pour améliorer la lisibilité du diagramme de regrouper les régions québécoises sous la forme présentée dans la figure ci-dessous. Nous les appelons centres culturels."),
 						html.Div(className='img-quebec', children=[
 							html.Img(src="assets/Quebec_clusters.PNG",
 							         id="quebec-cluster"),
@@ -409,7 +413,8 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 			dbc.Card(
 				dbc.CardBody(
 					[
-						html.H5("Sankey Diagramme", className="card-title"),
+						html.H5("Diagramme de Sankey", className="card-title"),
+						html.P("Dans cette section, nous avons un diagramme de Sankey qui indique la distribution des catégories d'événement par centre culturel. Il vous est possible de cliquer sur un centre pour voir les régions qui le composent et la distribution des évènements avec celles-ci. Les catégories sont également décomposables en sous-catégories. Si il n'y a pas de sous-catégorie, la catégorie sélectionnée mettra en évidence les flux qui la relient aux centres ou régions. "),
 						#html.Div(className='viz-container', children=[
 							html.Div(id='sankey-container', children=[
 								dcc.Graph(
@@ -437,10 +442,10 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 			dbc.Card(
 				dbc.CardBody(
 					[
-						html.H5("Visulisation6 - Bar Charts", className="card-title", id="Visu_5"),
+						html.H5("Diagramme en barres gratuits", className="card-title", id="Visu_5"),
 
 					]
-				), style={'backgroundColor':'rgb(96,28,236)', 'font_color':'white'}
+				), style={'backgroundColor':'rgb(96,28,236)', 'color':'white'}
 			),
 
 			# Barchart-Gratuit Diagramme
@@ -473,10 +478,10 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 			dbc.Card(
 				dbc.CardBody(
 					[
-						html.H5("Visulisation6 - Bar Charts", className="card-title", id="Visu_6"),
+						html.H5("Diagramme en barres", className="card-title", id="Visu_6"),
 
 					]
-				), style={'backgroundColor':'rgb(96,28,236)', 'font_color':'white'}
+				), style={'backgroundColor':'rgb(96,28,236)', 'color':'white'}
 			),
 
 
