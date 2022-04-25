@@ -142,7 +142,7 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 				dbc.CardBody(
 					[
 
-						html.H5("Visualisation1 - Stacked Bar", className="card-title", id="Visu_1"),
+						html.Div(id="Visu_1", children=[html.H5("Visualisation1 - Stacked Bar", className="card-title")]),
 
 					]
 				),style={'backgroundColor':'rgb(96,28,236)', 'font_color':'white'}
@@ -346,7 +346,7 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 			dbc.Card(
 				dbc.CardBody(
 					[
-						html.H5("Visulisation5 - Sankey Diagramme", className="card-title", id="Visu_4"),
+						html.Div(id="Visu_4", children=[html.H5("Visulisation5 - Sankey Diagramme", className="card-title")]),
 
 					]
 				), style={'backgroundColor':'rgb(96,28,236)', 'font_color':'white'}
