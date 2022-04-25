@@ -125,7 +125,10 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 									html.A(href="#Visu_4", children=["Diagramme de Sankey"])
 								]),
 								html.Li(children=[
-									html.A(href="#Visu_5", children=["Diagramme en barres"])
+									html.A(href="#Visu_5", children=["Diagramme en barres gratuits"])
+								]),
+								html.Li(children=[
+									html.A(href="#Visu_6", children=["Diagramme en barres"])
 								])
 							])
 						])
@@ -470,7 +473,7 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 			dbc.Card(
 				dbc.CardBody(
 					[
-						html.H5("Visulisation6 - Bar Charts", className="card-title", id="Visu_5"),
+						html.H5("Visulisation6 - Bar Charts", className="card-title", id="Visu_6"),
 
 					]
 				), style={'backgroundColor':'rgb(96,28,236)', 'font_color':'white'}
