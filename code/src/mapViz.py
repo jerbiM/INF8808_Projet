@@ -8,7 +8,7 @@ def mapQuebec(dfMap, geojsonQc):
                                featureidkey="properties.RES_NM_REG",
                                range_color=(0, 1715),
                                mapbox_style="carto-positron",
-                               zoom=3,
+                               zoom=2.75,
                                center={"lat": 52.541377, "lon": -70.373741},
                                opacity=0.5,
                                #title="Distribution des événements au Québec géographiquement"
