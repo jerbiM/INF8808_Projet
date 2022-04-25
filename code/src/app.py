@@ -113,22 +113,19 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 						html.Nav(className="menu", children=[
 							html.Ul(children=[
 								html.Li(children=[
-									html.A(href="#Visu_1", children=["Carte"])
+									html.A(href="#Visu_1", children=["Diagramme en barres empilées"])
 								]),
 								html.Li(children=[
 									html.A(href="#Visu_2", children=["Graphique linéaire"])
 								]),
 								html.Li(children=[
-									html.A(href="#Visu_3", children=["Diagramme en barres empilées"])
+									html.A(href="#Visu_3", children=["Carte"])
 								]),
 								html.Li(children=[
-									html.A(href="#Visu_4", children=["Carte de chaleur"])
+									html.A(href="#Visu_4", children=["Diagramme de Sankey"])
 								]),
 								html.Li(children=[
-									html.A(href="#Visu_5", children=["Diagramme de Sankey"])
-								]),
-								html.Li(children=[
-									html.A(href="#Visu_6", children=["Diagramme en barres"])
+									html.A(href="#Visu_5", children=["Diagramme en barres"])
 								])
 							])
 						])
@@ -142,10 +139,10 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 				dbc.CardBody(
 					[
 
-						html.H5("Visualisation1 - Stacked Bar", className="card-title"),
+						html.H5("Visualisation1 - Stacked Bar", className="card-title", id="Visu_1"),
 
 					]
-				),style={'backgroundColor':'#77E05A'}
+				),style={'backgroundColor':'rgb(96,28,236)', 'font_color':'white'}
 			),
 
 			# StackBarchart
@@ -255,10 +252,10 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 			dbc.Card(
 				dbc.CardBody(
 					[
-						html.H5("Visualisation2 - LineChart", className="card-title"),
+						html.H5("Visualisation2 - LineChart", className="card-title", id ="Visu_2"),
 
 					]
-				),style={'backgroundColor':'#77E05A'}
+				),style={'backgroundColor':'rgb(96,28,236)', 'font_color':'white'}
 			),
 
 			#linechart
@@ -312,7 +309,7 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 			dbc.Card(
 				dbc.CardBody(
 					[
-						html.H5("Visualisation3 - Map", className="card-title"),
+						html.H5("Visualisation3 - Map", className="card-title", id="Visu_3"),
 
 					]
 				),style={'backgroundColor':'#77E05A'}
@@ -346,10 +343,10 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 			dbc.Card(
 				dbc.CardBody(
 					[
-						html.H5("Visulisation5 - Sankey Diagramme", className="card-title"),
+						html.H5("Visulisation5 - Sankey Diagramme", className="card-title", id="Visu_4"),
 
 					]
-				), style={'backgroundColor': '#77E05A'}
+				), style={'backgroundColor':'rgb(96,28,236)', 'font_color':'white'}
 			),
 			#Sankey Diagram in groupe
 			#dbc.CardGroup([
@@ -437,10 +434,10 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 			dbc.Card(
 				dbc.CardBody(
 					[
-						html.H5("Visulisation6 - Bar Charts", className="card-title"),
+						html.H5("Visulisation6 - Bar Charts", className="card-title", id="Visu_5"),
 
 					]
-				), style={'backgroundColor': '#77E05A'}
+				), style={'backgroundColor':'rgb(96,28,236)', 'font_color':'white'}
 			),
 
 			# Barchart-Gratuit Diagramme
@@ -473,10 +470,10 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 			dbc.Card(
 				dbc.CardBody(
 					[
-						html.H5("Visulisation6 - Bar Charts", className="card-title"),
+						html.H5("Visulisation6 - Bar Charts", className="card-title", id="Visu_5"),
 
 					]
-				), style={'backgroundColor': '#77E05A'}
+				), style={'backgroundColor':'rgb(96,28,236)', 'font_color':'white'}
 			),
 
 
@@ -529,6 +526,7 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 	)
 
 
+app.title = 'Projet | INF8808'
 app.layout = init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10)
 #fig3,fig5
 
