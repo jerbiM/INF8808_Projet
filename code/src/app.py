@@ -93,7 +93,7 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 		[
 
 			html.Header(children=[
-				html.Div(children=[
+				html.Div(className="v-slider-bloc", children=[
 					html.Div(id="banner_header", children=[
 						html.Div(className="logo_S", children=[
 							html.P(
