@@ -1,3 +1,96 @@
+*, ::before, ::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Conteneurs "principaux" */
+
+body {
+  font-family: Helvetica;
+}
+
+.container {
+  overflow-x: hidden;
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory; /* forcément scroller selon y */
+}
+
+.v-slider-bloc {
+  color: black;
+  font-size: 30px;
+/*  display: flex;
+  justify-content: center;*/
+  align-items: center;
+  border-bottom: 5px solid black;
+  height: 100%;
+  scroll-snap-align: center; /* repositionne au centre du bloc*/
+}
+
+/* Menu : (dans le .v-slider-bloc:nth-child(1)) */
+
+#banner_header {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 2.5%;
+}
+
+.logo_S, .titre, .logo_P {
+  display: block;
+  text-align: center;
+  width: 30%;
+}
+
+.titre {
+  font-size: 125%;
+  font-style: bold;
+}
+
+#banner_1 {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.intro {
+  align-self: center;
+  margin-left: 10px;
+}
+
+.menu {
+  align-self: center;
+  margin-right: 10px;
+}
+
+.menu ul {
+  display: inline-block;
+  }
+
+.menu ul li {
+  text-align: center;
+  list-style-type: none; /*pas de puces*/
+  /*line-height: 50px; écart entre les lignes verticales*/
+  padding: 20px; /*pour espacer les lignes entre elles*/
+}
+
+.menu ul li a {
+  color: black;
+  /*text-decoration: none; pas de soulignage sur le cliquable*/
+}
+
+.menu ul li a:hover {
+  color: black;
+  background-color: #D3B79A;
+}
+
+/* Enfants du Slider : pour mettre un background changeant sur chacun*/
+
+/*.v-slider-bloc:nth-child(1){background-image: url('../01_Images/fond_home_leger_1.png');}
+.v-slider-bloc:nth-child(2){background-image: url('../01_Images/fond_home_leger_2.png');}
+.v-slider-bloc:nth-child(3){background-image: url('../01_Images/fond_home_leger_3.png');}
+.v-slider-bloc:nth-child(4){background-image: url('../01_Images/fond_home_leger_4.png');}*/
+
 .viz-container{
     height: 100%;
     flex-direction: column;
