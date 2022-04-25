@@ -315,7 +315,7 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 						html.H5("Visualisation3 - Map", className="card-title", id="Visu_3"),
 
 					]
-				),style={'backgroundColor':'#77E05A'}
+				),style={'backgroundColor':'rgb(96,28,236)', 'font_color':'white'}
 			),
 	#map Viz
 			dbc.Card(
@@ -349,7 +349,7 @@ def init_app_layout(fig1,fig2,fig7,fig8,fig9,fig10):
 						html.Div(id="Visu_4", children=[html.H5("Visulisation5 - Sankey Diagramme", className="card-title")]),
 
 					]
-				), style={'backgroundColor':'rgb(96,28,236)', 'font_color':'white'}
+				), style={'backgroundColor':'rgb(96,28,236)', 'color':'white'}
 			),
 			#Sankey Diagram in groupe
 			#dbc.CardGroup([
